@@ -3,39 +3,32 @@
     <el-row class="tac">
       <el-col :span="12">
         <el-menu
+          :default-active="activePath"
           active-text-color="#ffd04b"
           background-color="#545c64"
           class="el-menu-vertical-demo"
-          default-active="/dashboard"
           text-color="#fff"
           @open="handleOpen"
           @close="handleClose"
           router
         >
-          <el-menu-item index="/dashboard" :to="{ path: '/dashboard' }">
+          <el-menu-item index="/dashboard">
             <el-icon><HomeFilled /></el-icon>
             <span>首页</span>
           </el-menu-item>
 
-          <el-menu-item index="/navigator-two" :to="{ path: '/navigator-two' }">
+          <el-menu-item index="/navigator-two">
             <el-icon><IconMenu /></el-icon>
             <span>影院管理</span>
           </el-menu-item>
 
-          <el-menu-item
-            index="/navigator-three"
-            :to="{ path: '/navigator-three' }"
-          >
+          <el-menu-item index="/navigator-three">
             <el-icon><Document /></el-icon>
             <span>订单管理</span>
           </el-menu-item>
 
-          <!-- Navigator Four -->
-          <el-menu-item
-            index="/navigator-four"
-            :to="{ path: '/navigator-four' }"
-          >
-            <el-icon><Setting /></el-icon>
+          <el-menu-item index="/user_manager">
+            <el-icon><UserFilled /></el-icon>
             <span>用户管理</span>
           </el-menu-item>
         </el-menu>
@@ -49,36 +42,30 @@ import {
   Document,
   HomeFilled,
   Menu as IconMenu,
-  Setting,
+  UserFilled,
 } from "@element-plus/icons-vue";
-
-// 打开菜单时的回调
+import { useRoute } from "vue-router"; // 用于动态获取当前路径
+import { computed } from "vue";
 const handleOpen = (key: string, keyPath: string[]) => {
   console.log("Open:", key, keyPath);
 };
 
-// 关闭菜单时的回调
 const handleClose = (key: string, keyPath: string[]) => {
   console.log("Close:", key, keyPath);
 };
+
+const route = useRoute();
+const activePath = computed(() => route.path);
 </script>
 
 <style scoped>
 #aside-bar {
   background-color: #545c64;
-  height: 100vh; /* 侧边栏填满整个视口 */
+  height: 100%;
 }
 
 .el-menu-vertical-demo {
   width: 200px;
-  height: 100%; /* 填满侧边栏父容器 */
-}
-
-.el-menu-vertical-demo .el-menu-item {
-  padding: 0 20px; /* 菜单项的间距调整 */
-}
-
-.el-menu-vertical-demo .el-menu-item:hover {
-  background-color: #636c73; /* 鼠标悬浮的背景色 */
+  height: 100%;
 }
 </style>
