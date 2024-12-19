@@ -1,20 +1,42 @@
 import { createRouter, createWebHistory, RouteRecordRaw } from "vue-router";
-import HomeView from "../views/HomeView.vue";
+import Layout from "../layout/index.vue";
 
 const routes: Array<RouteRecordRaw> = [
   {
     path: "/",
-    name: "home",
-    component: HomeView,
+    component: Layout,
+    redirect: "/dashboard",
+    children: [
+      {
+        path: "dashboard",
+        component: () => import("@/views/dashboard/index.vue"),
+        name: "Dashboard",
+        meta: { title: "主页" },
+      },
+    ],
   },
   {
-    path: "/about",
-    name: "about",
-    // route level code-splitting
-    // this generates a separate chunk (about.[hash].js) for this route
-    // which is lazy-loaded when the route is visited.
-    component: () =>
-      import(/* webpackChunkName: "about" */ "../views/AboutView.vue"),
+    path: "/user_manager",
+    component: Layout,
+    meta: { title: "用户管理" },
+  },
+  {
+    path: "/login",
+    component: () => import("@/views/login/index.vue"),
+    meta: { title: "登陆", hidden: true },
+  },
+  {
+    path: "/404",
+    component: () => import("@/views/error-page/404.vue"),
+    meta: {},
+  },
+  {
+    path: "/401",
+    component: () => import("@/views/error-page/401.vue"),
+  },
+  {
+    path: "/:pathMatch(.*)*", // 捕获所有未匹配的路由
+    redirect: "/404", // 跳转到 404 页面
   },
 ];
 
