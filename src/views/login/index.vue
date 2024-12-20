@@ -44,7 +44,8 @@ const handleSubmit = () => {
   // 模拟登录
   if (username.value === "admin" && password.value === "123456") {
     console.log("登陆成功");
-    // 跳转到主页
+    const token = "your-unique-token";
+    localStorage.setItem("token", token);
     router.push("/dashboard");
   } else {
     // 登录失败，显示错误信息

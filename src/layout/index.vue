@@ -25,4 +25,7 @@ import headerBar from "./components/headerBar.vue";
 .el-container {
   height: 100%;
 }
+.el-header {
+  --el-header-padding: 0 5px;
+}
 </style>

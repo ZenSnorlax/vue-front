@@ -25,3 +25,24 @@ export function logout() {
     method: "post",
   });
 }
+
+export function getAditoriumInfo() {
+  return service({
+    url: "/api/aditorium/getAditoriumInfo",
+    method: "get",
+  });
+}
+
+export function getAditoriumData() {
+  return service({
+    url: "/api/aditorium/getAditoriumData",
+    method: "get",
+  });
+}
+
+export function getAditoriumPicture(id: string) {
+  return service({
+    url: "/api/aditorium/" + id + ".png",
+    method: "get",
+  });
+}
