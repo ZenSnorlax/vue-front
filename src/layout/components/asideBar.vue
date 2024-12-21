@@ -29,16 +29,18 @@
             >
           </el-sub-menu>
 
-          <el-menu-item index="/order_manager">
-            <el-icon><Document /></el-icon>
-            <span>订单管理</span>
-          </el-menu-item>
+          <el-sub-menu index="/order_manager">
+            <template #title>
+              <el-icon><Document /></el-icon>
+              <span>订单管理</span>
+            </template>
+            <el-menu-item index="/order_manager/list">订单列表</el-menu-item>
+          </el-sub-menu>
 
           <el-menu-item index="/user_manager">
             <el-icon><UserFilled /></el-icon>
             <span>用户管理</span>
           </el-menu-item>
-
           <el-sub-menu index="/movice_manager">
             <template #title>
               <el-icon><IconMenu /></el-icon>

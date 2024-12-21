@@ -41,6 +41,7 @@ const routes: Array<RouteRecordRaw> = [
             name: "AditoriumList",
             meta: {
               title: "影厅列表",
+              requiresAuth: true,
             },
           },
           {
@@ -56,12 +57,24 @@ const routes: Array<RouteRecordRaw> = [
 
       {
         path: "order_manager",
-        component: () => import("@/views/orderManager/index.vue"),
+        component: () => import("@/views/orderManager/list/index.vue"),
+        redirect: "/order_manager/list", // 默认重定向到子路由
         name: "OrderManager",
         meta: {
           title: "订单管理",
           requiresAuth: true,
         },
+        children: [
+          {
+            path: "list",
+            component: () => import("@/views/orderManager/list/index.vue"),
+            name: "OrderList",
+            meta: {
+              title: "订单列表",
+              requiresAuth: true,
+            },
+          },
+        ],
       },
       {
         path: "movice_manager",

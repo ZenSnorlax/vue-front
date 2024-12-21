@@ -51,6 +51,7 @@
 
 <script lang="ts" setup>
 import { ref, defineProps, watch, defineEmits } from "vue";
+import { fetchAuditoriumImageById } from "@/api/index"; //通过id获取相应影厅座位示意图
 
 // 定义父组件传递的属性
 const props = defineProps({
@@ -63,7 +64,6 @@ const props = defineProps({
 
 // 定义事件
 const emit = defineEmits(["update:drawerVisible"]);
-
 // 使用 ref 来控制抽屉的显示与隐藏
 const drawer = ref(props.drawerVisible);
 

@@ -1,54 +1,44 @@
 <template>
-  <div id="auditorium-list">
-    <!-- 添加影厅按钮 -->
-    <el-button
-      type="primary"
-      :icon="Plus"
-      circle
-      @click="showAddAuditoriumDialog"
-    />
+  <div id="order-list">
+    <!-- 添加订单按钮 -->
+    <el-button type="primary" :icon="Plus" circle @click="showAddOrderDialog" />
 
-    <!-- 影厅数据表格 -->
+    <!-- 订单数据表格 -->
     <el-table :data="tableData" style="width: 100%" border>
-      <!-- 影厅编号 -->
+      <!-- 订单编号 -->
       <el-table-column
         fixed
         prop="id"
-        label="影厅编号"
+        label="订单编号"
         width="150"
         align="center"
       />
-      <!-- 影厅名称 -->
+      <!-- 客户姓名 -->
       <el-table-column
-        prop="name"
-        label="影厅名称"
+        prop="customer"
+        label="客户姓名"
         width="180"
         align="center"
       />
-      <!-- 座位总数 -->
+      <!-- 影片名称 -->
       <el-table-column
-        prop="seats"
-        label="座位总数"
-        width="150"
+        prop="movie"
+        label="影片名称"
+        width="200"
         align="center"
       />
-      <!-- 影厅负责人 -->
-      <el-table-column
-        prop="manager"
-        label="影厅负责人"
-        width="150"
-        align="center"
-      />
-      <!-- 启用状态 -->
+      <!-- 座位号 -->
+      <el-table-column prop="seat" label="座位号" width="150" align="center" />
+      <!-- 订单状态 -->
       <el-table-column
         prop="status"
-        label="启用状态"
+        label="订单状态"
         width="150"
         align="center"
       >
         <template #default="{ row }">
           <el-tag
-            :type="row.status === '启用' ? 'success' : 'danger'"
+            :type="row.status === '已支付' ? 'success' : 'danger'"
             disable-transitions
             >{{ row.status }}</el-tag
           >
@@ -64,26 +54,18 @@
       >
         <template #default="{ row }">
           <div class="button-container">
-            <el-link
-              type="primary"
-              size="small"
-              @click="showAuditoriumDetails(row)"
-            >
+            <el-link type="primary" size="small" @click="showOrderDetails(row)">
               详情
             </el-link>
             <el-link
               type="success"
               size="small"
-              @click="showEditAuditoriumDialog(row)"
+              @click="showEditOrderDialog(row)"
             >
-              编辑
+              修改
             </el-link>
-            <el-link
-              type="danger"
-              size="small"
-              @click="deleteAuditorium(row.id)"
-            >
-              删除
+            <el-link type="danger" size="small" @click="deleteOrder(row.id)">
+              取消
             </el-link>
           </div>
         </template>
@@ -91,22 +73,22 @@
     </el-table>
   </div>
 
-  <!-- 影厅详情 Drawer -->
-  <AuditoriumDrawer
+  <!-- 订单详情 Drawer -->
+  <OrderDrawer
     :drawerVisible="isDrawerVisible"
     :row="selectedRow"
     @update:drawerVisible="isDrawerVisible = $event"
   />
 
-  <!-- 编辑影厅 Dialog -->
-  <EditAuditoriumDialog
+  <!-- 修改订单 Dialog -->
+  <EditOrderDialog
     :dialogVisible="isEditDialogVisible"
     :row="selectedRow"
     @update:dialogVisible="isEditDialogVisible = $event"
   />
 
-  <!-- 添加影厅 Dialog -->
-  <AddAuditoriumDialog
+  <!-- 添加订单 Dialog -->
+  <AddOrderDialog
     :dialogVisible="isAddDialogVisible"
     @update:dialogVisible="isAddDialogVisible = $event"
   />
@@ -115,78 +97,68 @@
 <script setup lang="ts">
 import { ref } from "vue";
 import { Plus } from "@element-plus/icons-vue"; // 图标
-import AuditoriumDrawer from "./components/detailDrawer.vue";
-import EditAuditoriumDialog from "./components/editDialog.vue";
-import AddAuditoriumDialog from "./components/addDialog.vue";
-import {
-  fetchAuditoriumList,
-  deleteAuditoriumById,
-  addAuditorium,
-} from "@/api/index";
+import OrderDrawer from "./components/detailDrawer.vue";
+import EditOrderDialog from "./components/editDialog.vue";
+import AddOrderDialog from "./components/addDialog.vue";
+import { fetchOrderList, deleteOrderById, addOrder } from "@/api/index";
+
 // 控制 Drawer 和 Dialog 的显示与隐藏
 const isDrawerVisible = ref(false);
 const isEditDialogVisible = ref(false);
 const isAddDialogVisible = ref(false);
 const selectedRow = ref<Record<string, any> | undefined>(undefined);
 
-// 影厅数据示例
+// 订单数据示例
 const tableData = ref([
   {
-    id: "001",
-    name: "影厅 1",
-    seats: 150,
-    status: "启用",
-    manager: "Tom",
+    id: "ORD001",
+    customer: "张三",
+    movie: "阿凡达",
+    seat: "A1",
+    status: "已支付",
   },
   {
-    id: "002",
-    name: "影厅 2",
-    seats: 120,
-    status: "禁用",
-    manager: "Jerry",
+    id: "ORD002",
+    customer: "李四",
+    movie: "复仇者联盟",
+    seat: "B3",
+    status: "未支付",
   },
   {
-    id: "003",
-    name: "影厅 3",
-    seats: 80,
-    status: "启用",
-    manager: "Anna",
-  },
-  {
-    id: "004",
-    name: "影厅 4",
-    seats: 200,
-    status: "启用",
-    manager: "Lucy",
+    id: "ORD003",
+    customer: "王五",
+    movie: "星际穿越",
+    seat: "C5",
+    status: "已支付",
   },
 ]);
 
 // 点击详情按钮的处理函数
-const showAuditoriumDetails = (row: any) => {
+const showOrderDetails = (row: any) => {
   // 展示 Drawer
   isDrawerVisible.value = true;
   selectedRow.value = row;
 };
 
-// 点击编辑按钮的处理函数
-const showEditAuditoriumDialog = (row: any) => {
+// 点击修改按钮的处理函数
+const showEditOrderDialog = (row: any) => {
   isEditDialogVisible.value = true;
   selectedRow.value = row;
 };
 
-// 点击删除的处理函数
-const deleteAuditorium = (id: string) => {
+// 点击取消订单的处理函数
+const deleteOrder = (id: string) => {
   const index = tableData.value.findIndex((item) => item.id === id);
   if (index !== -1) {
-    tableData.value.splice(index, 1); // 删除影厅信息
-    console.log(`影厅 ${id} 已删除`);
+    tableData.value.splice(index, 1); // 删除订单信息
+    console.log(`订单 ${id} 已取消`);
   }
 };
 
 // 点击添加按钮的处理函数
-const showAddAuditoriumDialog = () => {
-  isAddDialogVisible.value = true; // 打开添加影厅对话框
-  selectedRow.value = undefined; // 清空编辑内容以便添加新影厅
+const showAddOrderDialog = () => {
+  isAddDialogVisible.value = true; // 打开添加订单对话框
+  selectedRow.value = undefined; // 清空编辑内容以便添加新订单
 };
 </script>
 
