@@ -1,12 +1,14 @@
 <template>
   <div id="auditorium-list">
-    <!-- 添加影厅按钮 -->
-    <el-button
-      type="primary"
-      :icon="Plus"
-      circle
-      @click="showAddAuditoriumDialog"
-    />
+    <!-- 表格头部，包含添加按钮 -->
+    <div class="toolbar">
+      <el-button
+        type="primary"
+        :icon="Plus"
+        circle
+        @click="showAddAuditoriumDialog"
+      />
+    </div>
 
     <!-- 影厅数据表格 -->
     <el-table :data="tableData" style="width: 100%" border>
@@ -65,13 +67,6 @@
         <template #default="{ row }">
           <div class="button-container">
             <el-link
-              type="primary"
-              size="small"
-              @click="showAuditoriumDetails(row)"
-            >
-              详情
-            </el-link>
-            <el-link
               type="success"
               size="small"
               @click="showEditAuditoriumDialog(row)"
@@ -91,13 +86,6 @@
     </el-table>
   </div>
 
-  <!-- 影厅详情 Drawer -->
-  <AuditoriumDrawer
-    :drawerVisible="isDrawerVisible"
-    :row="selectedRow"
-    @update:drawerVisible="isDrawerVisible = $event"
-  />
-
   <!-- 编辑影厅 Dialog -->
   <EditAuditoriumDialog
     :dialogVisible="isEditDialogVisible"
@@ -115,58 +103,17 @@
 <script setup lang="ts">
 import { ref } from "vue";
 import { Plus } from "@element-plus/icons-vue"; // 图标
-import AuditoriumDrawer from "./components/detailDrawer.vue";
+import { table_data } from "@/test/aditorium";
 import EditAuditoriumDialog from "./components/editDialog.vue";
 import AddAuditoriumDialog from "./components/addDialog.vue";
-import {
-  fetchAuditoriumList,
-  deleteAuditoriumById,
-  addAuditorium,
-} from "@/api/index";
+
 // 控制 Drawer 和 Dialog 的显示与隐藏
-const isDrawerVisible = ref(false);
 const isEditDialogVisible = ref(false);
 const isAddDialogVisible = ref(false);
 const selectedRow = ref<Record<string, any> | undefined>(undefined);
 
 // 影厅数据示例
-const tableData = ref([
-  {
-    id: "001",
-    name: "影厅 1",
-    seats: 150,
-    status: "启用",
-    manager: "Tom",
-  },
-  {
-    id: "002",
-    name: "影厅 2",
-    seats: 120,
-    status: "禁用",
-    manager: "Jerry",
-  },
-  {
-    id: "003",
-    name: "影厅 3",
-    seats: 80,
-    status: "启用",
-    manager: "Anna",
-  },
-  {
-    id: "004",
-    name: "影厅 4",
-    seats: 200,
-    status: "启用",
-    manager: "Lucy",
-  },
-]);
-
-// 点击详情按钮的处理函数
-const showAuditoriumDetails = (row: any) => {
-  // 展示 Drawer
-  isDrawerVisible.value = true;
-  selectedRow.value = row;
-};
+const tableData = ref(table_data);
 
 // 点击编辑按钮的处理函数
 const showEditAuditoriumDialog = (row: any) => {
@@ -195,6 +142,13 @@ const showAddAuditoriumDialog = () => {
 #auditorium-list {
   padding: 20px;
   border-radius: 8px;
+}
+
+/* 工具栏样式 */
+.toolbar {
+  display: flex;
+  justify-content: flex-end;
+  margin-bottom: 20px;
 }
 
 /* 表格样式 */
