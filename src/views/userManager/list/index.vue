@@ -131,7 +131,14 @@ const tableData = ref([]);
 const totalRecords = ref(0);
 const currentPage = ref(1);
 const pageSize = ref(10);
-const filters = ref({});
+const filters = ref({
+  userName: "",
+  userId: "",
+  userEmail: "",
+  status: "",
+  range: [] as string[], // 类型为字符串数组
+  userPhone: "",
+});
 
 // 格式化时间
 const formatDate = (date: string) => dayjs(date).format("YYYY-MM-DD HH:mm:ss");
@@ -146,13 +153,24 @@ const getStatusType = (status: string) => {
   }
 };
 
+const { userName, userId, userEmail, userPhone, range, status } = filters.value;
+
+let startTime = range[0];
+let endTime = range[1];
+
 // 获取分页数据
 const fetchPaginatedData = async () => {
   try {
     const response = await getUsersPaginated({
       pageSize: pageSize.value,
       page: currentPage.value,
-      ...filters.value, // 传递筛选参数
+      userName,
+      userId,
+      userEmail,
+      userPhone,
+      status,
+      startTime,
+      endTime,
     });
 
     const { total, data } = response.data.contents;
@@ -164,7 +182,7 @@ const fetchPaginatedData = async () => {
 };
 
 // 筛选逻辑
-const handleFilter = (newFilters: Record<string, any>) => {
+const handleFilter = (newFilters: any) => {
   filters.value = newFilters;
   currentPage.value = 1; // 筛选后回到第一页
   fetchPaginatedData();

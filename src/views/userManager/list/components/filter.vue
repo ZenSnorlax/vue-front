@@ -53,7 +53,7 @@
 
     <!-- 注册时间筛选（日期范围选择框） -->
     <el-date-picker
-      v-model="filters.registrationTime"
+      v-model="filters.range"
       type="daterange"
       range-separator="至"
       start-placeholder="开始时间"
@@ -78,8 +78,8 @@ const filters = ref({
   userName: "",
   userId: "",
   userEmail: "",
-  status: "", // 初始为空字符串表示没有选择任何状态
-  registrationTime: [] as string[], // 类型为字符串数组
+  status: "",
+  range: [] as string[], // 类型为字符串数组
   userPhone: "",
 });
 
@@ -88,10 +88,10 @@ const statusOptions = ref(["活跃", "禁用"]);
 
 // 筛选变化时触发
 const applyFilter = () => {
-  const [start, end] = filters.value.registrationTime;
+  const [start, end] = filters.value.range;
 
   // 如果存在日期范围，则格式化为字符串
-  filters.value.registrationTime =
+  filters.value.range =
     start && end
       ? [
           dayjs(start).format("YYYY-MM-DD HH:mm:ss"),

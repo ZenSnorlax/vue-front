@@ -4,11 +4,12 @@ import service from "@/utils/request";
 interface UserData {
   userId?: string;
   userName?: string; // 用户名
-  password?: string; // 密码（仅创建或修改时传递）
   userEmail?: string; // 用户邮箱
   userPhone?: string; // 用户手机
   status?: string; // 用户状态
-  registrationTime?: string; // 注册时间范围
+  registerTime?: string;
+  startTime?: string; // 注册时间范围
+  endTime?: string;
 }
 
 // 分页参数定义
