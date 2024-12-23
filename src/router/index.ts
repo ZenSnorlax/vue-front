@@ -19,12 +19,23 @@ const routes: Array<RouteRecordRaw> = [
       },
       {
         path: "user_manager",
-        component: () => import("@/views/userManager/index.vue"),
+        redirect: "/user_manager/list", // 默认重定向到子路由
         name: "UserManager",
         meta: {
           title: "用户管理",
           requiresAuth: true,
         },
+        children: [
+          {
+            path: "list",
+            component: () => import("@/views/userManager/list/index.vue"),
+            name: "UserList",
+            meta: {
+              title: "用户列表",
+              requiresAuth: true,
+            },
+          },
+        ],
       },
       {
         path: "/aditorium_manager",
@@ -57,7 +68,6 @@ const routes: Array<RouteRecordRaw> = [
 
       {
         path: "order_manager",
-        component: () => import("@/views/orderManager/list/index.vue"),
         redirect: "/order_manager/list", // 默认重定向到子路由
         name: "OrderManager",
         meta: {
@@ -71,6 +81,24 @@ const routes: Array<RouteRecordRaw> = [
             name: "OrderList",
             meta: {
               title: "订单列表",
+              requiresAuth: true,
+            },
+          },
+          {
+            path: "data",
+            component: () => import("@/views/orderManager/data/index.vue"),
+            name: "OrderData",
+            meta: {
+              title: "运营数据",
+              requiresAuth: true,
+            },
+          },
+          {
+            path: "feedback",
+            component: () => import("@/views/orderManager/feedback/index.vue"),
+            name: "OrderFeedback",
+            meta: {
+              title: "订单反馈",
               requiresAuth: true,
             },
           },

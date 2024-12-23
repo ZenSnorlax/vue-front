@@ -1,39 +1,40 @@
 <template>
   <el-dialog v-model="dialogVisible" title="编辑订单信息" width="500px">
     <el-form :model="form" label-width="100px">
-      <!-- 用户编号 -->
+      <!-- 用户名称 -->
+      <el-form-item label="用户名称">
+        <el-input v-model="form.userName" placeholder="请输入订单编号" />
+      </el-form-item>
+
+      <!-- 用户编号  -->
       <el-form-item label="用户编号">
         <el-input v-model="form.userId" placeholder="请输入用户编号" />
       </el-form-item>
 
-      <!-- 电影名称 -->
-      <el-form-item label="电影名称">
-        <el-input v-model="form.movieName" placeholder="请输入电影名称" />
+      <!-- 邮箱 -->
+      <el-form-item label="邮箱">
+        <el-input v-model="form.userEmail" placeholder="请输入邮箱" />
       </el-form-item>
 
-      <!-- 影厅名称 -->
-      <el-form-item label="影厅名称">
-        <el-input v-model="form.aditoriumName" placeholder="请输入影厅名称" />
+      <!-- 手机号码 -->
+      <el-form-item label="手机号">
+        <el-input v-model="form.userPhone" placeholder="请输入手机号" />
       </el-form-item>
 
-      <!-- 订单状态 -->
-      <el-form-item label="订单状态">
-        <el-select v-model="form.status" placeholder="请选择订单状态">
-          <el-option label="已支付" value="已支付" />
-          <el-option label="未支付" value="未支付" />
-          <el-option label="已确认" value="已确认" />
-          <el-option label="已观看" value="已观看" />
-          <el-option label="已取消" value="已取消" />
-          <el-option label="已退款" value="已退款" />
+      <!-- 用户状态 -->
+      <el-form-item label="用户状态">
+        <el-select v-model="form.status" placeholder="请选择用户状态">
+          <el-option label="活跃" value="活跃" />
+          <el-option label="禁用" value="禁用" />
         </el-select>
       </el-form-item>
 
-      <!-- 下单时间 -->
-      <el-form-item label="下单时间">
+      <!-- 注册时间 -->
+      <el-form-item label="注册时间">
         <el-date-picker
-          v-model="form.orderTime"
+          v-model="form.registrationTime"
           type="datetime"
-          placeholder="选择下单时间"
+          placeholder="选择注册时间"
         />
       </el-form-item>
     </el-form>

@@ -2,15 +2,16 @@ import service from "@/utils/request";
 
 // 通用接口参数定义
 interface LoginData {
-  username: string;
-  password: string;
+  username: string; // 后端管理人员
+  password: string; // 密码
 }
 
-interface AuditoriumData {
-  name: string; // 影厅名称
-  status: string; // 启用/禁用状态
-  manager: string; // 影厅负责人
-  totalSeats: number; // 总座位数
+interface AditoriumData {
+  name: string;
+  status: string;
+  manager: string;
+  totalSeats: number;
+  header: string;
 }
 
 interface OrderData {
@@ -20,35 +21,36 @@ interface OrderData {
   status: string; // 订单状态（已支付/未支付）
 }
 
-/** 用户登录 */
+/** 管理人员登录 */
 export function login(data: LoginData) {
   return service({
-    url: "/api/user/login",
+    url: "/api/login",
     method: "post",
     data,
   });
 }
 
 /** 获取影厅列表 */
-export function fetchAuditoriumList() {
+export function getAuditoriums() {
   return service({
-    url: "/api/auditorium/list",
+    url: "/api/auditoriums",
     method: "get",
   });
 }
 
-/** 根据影厅 ID 获取座位示意图 */
-export function fetchAuditoriumImageById(id: string) {
+/** 获取影厅座位示意图 */
+export function getAditoriumImage(id: string) {
   return service({
-    url: `/api/auditorium/${id}.png`,
+    url: `/api/auditoriums/image/${id}.png`,
     method: "get",
+    responseType: "blob", // 返回二进制数据（图片）
   });
 }
 
 /** 上传影厅座位示意图 */
-export function uploadAuditoriumImage(id: string, image: FormData) {
+export function uploadAditoriumImage(id: string, image: FormData) {
   return service({
-    url: `/api/auditorium/upload/${id}`,
+    url: `/api/auditoriums/image/${id}.png`,
     method: "post",
     headers: {
       "Content-Type": "multipart/form-data",
@@ -57,61 +59,52 @@ export function uploadAuditoriumImage(id: string, image: FormData) {
   });
 }
 
-/** 获取影厅收入数据 */
-export function fetchAuditoriumIncome() {
+/** 获取影厅收入 */
+export function getAditoriumIncome() {
   return service({
-    url: "/api/auditorium/income",
+    url: "/api/auditoriums/income",
     method: "get",
   });
 }
 
 /** 删除影厅 */
-export function deleteAuditoriumById(id: string) {
+export function deleteAditorium(id: string) {
   return service({
-    url: `/api/auditorium/delete/${id}`,
+    url: `/api/auditoriums/${id}`,
     method: "delete",
   });
 }
 
 /** 新增影厅 */
-export function addAuditorium(data: AuditoriumData) {
+export function createAditorium(data: AditoriumData) {
   return service({
-    url: "/api/auditorium/add",
+    url: "/api/auditoriums",
     method: "post",
     data,
   });
 }
 
-/** 修改影厅 */
-export function updateAuditorium(id: string, data: AuditoriumData) {
+/** 修改影厅信息 */
+export function updateAditorium(id: string, data: AditoriumData) {
   return service({
-    url: `/api/auditorium/update/${id}`,
+    url: `/api/auditoriums/${id}`,
     method: "put",
     data,
   });
 }
 
 /** 获取订单列表 */
-export function fetchOrderList() {
+export function getOrders() {
   return service({
-    url: "/api/order/list",
+    url: "/api/orders",
     method: "get",
   });
 }
 
-/** 新增订单 */
-export function addOrder(data: OrderData) {
-  return service({
-    url: "/api/order/add",
-    method: "post",
-    data,
-  });
-}
-
 /** 删除订单 */
-export function deleteOrderById(id: string) {
+export function deleteOrder(id: string) {
   return service({
-    url: `/api/order/delete/${id}`,
+    url: `/api/orders/${id}`,
     method: "delete",
   });
 }
@@ -119,33 +112,61 @@ export function deleteOrderById(id: string) {
 /** 修改订单 */
 export function updateOrder(id: string, data: OrderData) {
   return service({
-    url: `/api/order/update/${id}`,
+    url: `/api/orders/${id}`,
     method: "put",
     data,
   });
 }
 
 /** 获取订单详情 */
-export function fetchOrderDetails(id: string) {
+export function getOrderDetails(id: string) {
   return service({
-    url: `/api/order/details/${id}`,
+    url: `/api/orders/${id}`,
     method: "get",
   });
 }
 
-/**
- * 数据库设计参考：
- * - 影厅表（Auditorium Table）:
- *   - id: 影厅的唯一标识符
- *   - name: 影厅名称，如“影厅 1”
- *   - status: 是否启用（启用/禁用）
- *   - manager: 负责影厅管理的人员
- *   - totalSeats: 影厅的总座位数
- *
- * - 技术设备表（Technical Equipment Table）:
- *   - auditoriumId: 关联影厅表的编号
- *   - projectorType: 投影设备类型（如数字投影、激光投影等）
- *   - soundSystem: 音响设备类型（如杜比全景声、IMAX 声效等）
- *   - screenType: 屏幕类型（如普通屏幕、IMAX 屏幕等）
- *   - screenSize: 屏幕的具体宽度和高度
- */
+/** 获取订单反馈列表 */
+export function getOrderFeedback() {
+  return service({
+    url: "/api/orders/feedback",
+    method: "get",
+  });
+}
+
+/** 获取用户列表 */
+export function getUsers() {
+  return service({
+    url: "/api/users",
+    method: "get",
+  });
+}
+
+/** 添加用户 */
+export function createUser(data: { username: string; password: string }) {
+  return service({
+    url: "/api/users",
+    method: "post",
+    data,
+  });
+}
+
+/** 更新用户信息 */
+export function updateUser(
+  id: string,
+  data: { username: string; password: string }
+) {
+  return service({
+    url: `/api/users/${id}`,
+    method: "put",
+    data,
+  });
+}
+
+/** 删除用户 */
+export function deleteUser(id: string) {
+  return service({
+    url: `/api/users/${id}`,
+    method: "delete",
+  });
+}

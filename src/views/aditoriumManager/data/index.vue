@@ -1,5 +1,5 @@
 <template>
-  <div id="operation-data">
+  <div class="operation-data">
     <!-- 影厅收入图表 -->
     <el-card class="chart-card">
       <div class="chart" ref="chartRef1"></div>
@@ -10,7 +10,7 @@
 <script setup lang="ts">
 import * as echarts from "echarts";
 import { ref, onMounted } from "vue";
-import { fetchAuditoriumIncome } from "@/api/index"; //导入影厅名称与收入的字典api
+import { getAuditoriumIncome } from "@/api/index"; //导入影厅名称与收入的字典api
 // 定义 ref 来存储图表 DOM 元素
 const chartRef1 = ref(null);
 type EChartsOption = echarts.EChartsOption;

@@ -46,7 +46,6 @@ import { defineProps, defineEmits, ref, reactive, watch } from "vue";
 import { updateAuditorium } from "@/api/index";
 
 // 定义父组件传递的属性
-// 定义父组件传递的属性
 const props = defineProps({
   dialogVisible: { type: Boolean, default: false },
   row: {
@@ -60,7 +59,9 @@ const emit = defineEmits(["update:dialogVisible"]);
 
 // 控制对话框显示
 const dialogVisible = ref(props.dialogVisible);
-const form = ref(props.row);
+
+// 使用深拷贝确保 `form` 数据不直接引用 `props.row`
+const form = ref({ ...props.row });
 
 // 监听 props.dialogVisible 的变化，确保同步
 watch(
@@ -70,10 +71,11 @@ watch(
   }
 );
 
+// 监听 props.row 的变化，更新 `form` 数据
 watch(
   () => props.row,
   (newVal) => {
-    form.value = newVal;
+    form.value = { ...newVal }; // 使用深拷贝
   }
 );
 

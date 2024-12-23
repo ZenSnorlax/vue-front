@@ -2,13 +2,11 @@
   <div id="order-list">
     <!-- 筛选和添加订单 -->
     <div class="toolbar">
-      <Filter></Filter>
-      <el-button
-        type="primary"
-        :icon="Plus"
-        circle
-        @click="showAddOrderDialog"
-      />
+      <Filter
+        @filter-con="filterData"
+        :orderStatusList="orderStatusList"
+      ></Filter>
+      <el-button type="primary" :icon="Plus" circle @click="handleAdd" />
     </div>
 
     <!-- 订单数据表格 -->
@@ -20,16 +18,16 @@
         width="150"
         align="center"
       />
-      <!-- 顾客编号 -->
+      <!-- 用户编号 -->
       <el-table-column
-        prop="customerId"
-        label="顾客编号"
+        prop="userId"
+        label="用户编号"
         width="150"
         align="center"
       />
       <!-- 影厅名称 -->
       <el-table-column
-        prop="auditoriumName"
+        prop="aditoriumName"
         label="影厅名称"
         width="150"
         align="center"
@@ -49,14 +47,22 @@
         align="center"
       >
         <template #default="{ row }">
-          <el-tag
-            :type="row.status === '已支付' ? 'success' : 'danger'"
-            disable-transitions
-            >{{ row.status }}</el-tag
-          >
+          <el-tag :type="getStatusType(row.status)" disable-transitions>
+            {{ row.status }}
+          </el-tag>
         </template>
       </el-table-column>
-
+      <!-- 下单时间 -->
+      <el-table-column
+        prop="orderTime"
+        label="下单时间"
+        width="200"
+        align="center"
+      >
+        <template #default="{ row }">
+          <span>{{ formatDate(row.orderTime) }}</span>
+        </template>
+      </el-table-column>
       <!-- 操作 -->
       <el-table-column
         fixed="right"
@@ -66,23 +72,18 @@
       >
         <template #default="{ row }">
           <div class="button-container">
-            <el-link type="primary" size="small" @click="showOrderDetails(row)">
+            <el-link type="primary" size="small" @click="handleDetail(row)">
               详情
             </el-link>
-            <el-link
-              type="success"
-              size="small"
-              @click="showEditOrderDialog(row)"
-            >
+            <el-link type="success" size="small" @click="handleUpdata(row)">
               修改
             </el-link>
             <el-link
               type="danger"
               size="small"
-              @click="deleteOrder(row.orderId)"
+              @click="handleDelete(row.orderId)"
+              >取消</el-link
             >
-              取消
-            </el-link>
           </div>
         </template>
       </el-table-column>
@@ -108,14 +109,14 @@
   />
 
   <!-- 修改订单 Dialog -->
-  <EditOrderDialog
+  <EditDialog
     :dialogVisible="isEditDialogVisible"
     :row="selectedRow"
     @update:dialogVisible="isEditDialogVisible = $event"
   />
 
   <!-- 添加订单 Dialog -->
-  <AddOrderDialog
+  <AddDialog
     :dialogVisible="isAddDialogVisible"
     @update:dialogVisible="isAddDialogVisible = $event"
   />
@@ -125,30 +126,82 @@
 import { ref, computed } from "vue";
 import { Plus } from "@element-plus/icons-vue"; // 图标
 import OrderDrawer from "./components/detailDrawer.vue";
-import EditOrderDialog from "./components/editDialog.vue";
-import AddOrderDialog from "./components/addDialog.vue";
-import { table_data } from "@/test/order";
+import EditDialog from "./components/editDialog.vue";
+import AddDialog from "./components/addDialog.vue";
+import { order_data } from "@/test/order"; // 示例数据
 import Filter from "./components/filter.vue";
+import dayjs from "dayjs"; // 导入 dayjs 库
+
 // 控制 Drawer 和 Dialog 的显示与隐藏
 const isDrawerVisible = ref(false);
 const isEditDialogVisible = ref(false);
 const isAddDialogVisible = ref(false);
 const selectedRow = ref<Record<string, any> | undefined>(undefined);
 
-// 订单数据示例
-const tableData = ref(table_data);
-
-// 筛选逻辑
-const searchQuery = ref("");
+// 订单数据
+const tableData = ref(order_data);
 const filteredData = ref([...tableData.value]);
 
-const filterData = () => {
-  const query = searchQuery.value.toLowerCase();
-  filteredData.value = tableData.value.filter(
-    (item) =>
-      item.orderId.toLowerCase().includes(query) ||
-      item.movieName.toLowerCase().includes(query)
-  );
+// 订单状态列表
+const orderStatusList = [
+  "已创建",
+  "未支付",
+  "已支付",
+  "已确认",
+  "已观看",
+  "已取消",
+  "已退款",
+];
+
+// 筛选逻辑
+const filterData = (filters: any) => {
+  const { orderId, movieName, userId, auditoriumName, status, orderTime } =
+    filters;
+
+  filteredData.value = tableData.value.filter((item) => {
+    const isOrderTimeInRange = () => {
+      if (!orderTime || orderTime.length !== 2) return true;
+      const [start, end] = orderTime;
+      const itemTime = dayjs(item.orderTime, "YYYY-MM-DD HH:mm:ss");
+      return (
+        itemTime.isAfter(dayjs(start, "YYYY-MM-DD HH:mm:ss")) &&
+        itemTime.isBefore(dayjs(end, "YYYY-MM-DD HH:mm:ss"))
+      );
+    };
+
+    return (
+      (orderId ? item.orderId.includes(orderId) : true) &&
+      (movieName ? item.movieName.includes(movieName) : true) &&
+      (userId ? item.userId.includes(userId) : true) &&
+      (auditoriumName ? item.aditoriumName.includes(auditoriumName) : true) &&
+      (status ? item.status === status : true) &&
+      isOrderTimeInRange()
+    );
+  });
+};
+
+// 格式化时间
+const formatDate = (date: string) => {
+  return dayjs(date).format("YYYY-MM-DD HH:mm:ss");
+};
+
+// 状态颜色类型
+const getStatusType = (status: string) => {
+  switch (status) {
+    case "已支付":
+      return "success";
+    case "已取消":
+    case "未支付":
+    case "已退款":
+      return "danger";
+    case "已确认":
+    case "已观看":
+      return "info";
+    case "已创建":
+      return "warning";
+    default:
+      return "default";
+  }
 };
 
 // 分页逻辑
@@ -162,35 +215,42 @@ const paginatedData = computed(() => {
   return filteredData.value.slice(start, end);
 });
 
-// 点击详情按钮的处理函数
-const showOrderDetails = (row: any) => {
+// 详情操作
+const handleDetail = (row: any) => {
   isDrawerVisible.value = true;
   selectedRow.value = row;
 };
 
-// 点击修改按钮的处理函数
-const showEditOrderDialog = (row: any) => {
+// 修改操作
+const handleUpdata = (row: any) => {
   isEditDialogVisible.value = true;
   selectedRow.value = row;
 };
 
-// 点击取消订单的处理函数
-const deleteOrder = (orderId: string) => {
+// 删除操作
+const handleDelete = (orderId: string) => {
   const index = tableData.value.findIndex((item) => item.orderId === orderId);
   if (index !== -1) {
-    tableData.value.splice(index, 1); // 删除订单信息
-    filterData(); // 更新筛选后的数据
+    tableData.value.splice(index, 1);
     console.log(`订单 ${orderId} 已取消`);
+    filterData({
+      orderId: "",
+      movieName: "",
+      userId: "",
+      aditoriumName: "",
+      status: "",
+      orderTime: [],
+    });
   }
 };
 
-// 点击添加按钮的处理函数
-const showAddOrderDialog = () => {
-  isAddDialogVisible.value = true; // 打开添加订单对话框
-  selectedRow.value = undefined; // 清空编辑内容以便添加新订单
+// 添加操作
+const handleAdd = () => {
+  isAddDialogVisible.value = true;
+  selectedRow.value = undefined;
 };
 
-// 处理页码变化
+// 分页页码切换
 const handlePageChange = (page: number) => {
   currentPage.value = page;
 };
@@ -222,18 +282,6 @@ const handlePageChange = (page: number) => {
   display: flex;
   justify-content: center;
   gap: 20px;
-}
-
-.el-link {
-  transition: background-color 0.3s;
-}
-
-.el-link:hover {
-  background-color: #f5f5f5;
-}
-
-.el-button {
-  margin: 10px;
 }
 
 .pagination-container {

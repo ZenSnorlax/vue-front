@@ -2,12 +2,7 @@
   <div id="auditorium-list">
     <!-- 表格头部，包含添加按钮 -->
     <div class="toolbar">
-      <el-button
-        type="primary"
-        :icon="Plus"
-        circle
-        @click="showAddAuditoriumDialog"
-      />
+      <el-button type="primary" :icon="Plus" circle @click="handleAdd" />
     </div>
 
     <!-- 影厅数据表格 -->
@@ -66,18 +61,10 @@
       >
         <template #default="{ row }">
           <div class="button-container">
-            <el-link
-              type="success"
-              size="small"
-              @click="showEditAuditoriumDialog(row)"
-            >
+            <el-link type="success" size="small" @click="handleUpdata(row)">
               编辑
             </el-link>
-            <el-link
-              type="danger"
-              size="small"
-              @click="deleteAuditorium(row.id)"
-            >
+            <el-link type="danger" size="small" @click="handleDelete(row.id)">
               删除
             </el-link>
           </div>
@@ -87,14 +74,14 @@
   </div>
 
   <!-- 编辑影厅 Dialog -->
-  <EditAuditoriumDialog
+  <EditDialog
     :dialogVisible="isEditDialogVisible"
     :row="selectedRow"
     @update:dialogVisible="isEditDialogVisible = $event"
   />
 
   <!-- 添加影厅 Dialog -->
-  <AddAuditoriumDialog
+  <AddDialog
     :dialogVisible="isAddDialogVisible"
     @update:dialogVisible="isAddDialogVisible = $event"
   />
@@ -104,8 +91,8 @@
 import { ref } from "vue";
 import { Plus } from "@element-plus/icons-vue"; // 图标
 import { table_data } from "@/test/aditorium";
-import EditAuditoriumDialog from "./components/editDialog.vue";
-import AddAuditoriumDialog from "./components/addDialog.vue";
+import EditDialog from "./components/editDialog.vue";
+import AddDialog from "./components/addDialog.vue";
 
 // 控制 Drawer 和 Dialog 的显示与隐藏
 const isEditDialogVisible = ref(false);
@@ -116,13 +103,13 @@ const selectedRow = ref<Record<string, any> | undefined>(undefined);
 const tableData = ref(table_data);
 
 // 点击编辑按钮的处理函数
-const showEditAuditoriumDialog = (row: any) => {
+const handleUpdata = (row: any) => {
   isEditDialogVisible.value = true;
   selectedRow.value = row;
 };
 
 // 点击删除的处理函数
-const deleteAuditorium = (id: string) => {
+const handleDelete = (id: string) => {
   const index = tableData.value.findIndex((item) => item.id === id);
   if (index !== -1) {
     tableData.value.splice(index, 1); // 删除影厅信息
@@ -131,7 +118,7 @@ const deleteAuditorium = (id: string) => {
 };
 
 // 点击添加按钮的处理函数
-const showAddAuditoriumDialog = () => {
+const handleAdd = () => {
   isAddDialogVisible.value = true; // 打开添加影厅对话框
   selectedRow.value = undefined; // 清空编辑内容以便添加新影厅
 };

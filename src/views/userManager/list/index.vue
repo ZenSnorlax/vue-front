@@ -1,58 +1,59 @@
 <template>
-  <div id="schedule-list">
-    <!-- 筛选和添加放映计划 -->
+  <div id="user-list">
+    <!-- 筛选和添加用户 -->
     <div class="toolbar">
       <Filter @filter-con="filterData"></Filter>
       <el-button type="primary" :icon="Plus" circle @click="handleAdd" />
     </div>
 
-    <!-- 放映计划数据表格 -->
+    <!-- 用户数据表格 -->
     <el-table :data="paginatedData" style="width: 100%" border>
-      <!-- 放映编号 -->
+      <!-- 用户编号 -->
       <el-table-column
-        prop="scheduleId"
-        label="放映编号"
+        prop="userId"
+        label="用户编号"
         width="150"
         align="center"
       />
-      <!-- 电影名称 -->
+      <!-- 用户姓名 -->
       <el-table-column
-        prop="movieName"
-        label="电影名称"
+        prop="userName"
+        label="用户姓名"
         width="200"
         align="center"
       />
-      <!-- 影厅名称 -->
+      <!-- 用户邮箱 -->
       <el-table-column
-        prop="auditorium"
-        label="影厅名称"
-        width="150"
+        prop="userEmail"
+        label="邮箱"
+        width="250"
         align="center"
       />
-      <!-- 放映开始时间 -->
+      <!-- 用户手机号码 -->
       <el-table-column
-        prop="startTime"
-        label="开始时间"
-        width="250"
+        prop="userPhone"
+        label="手机号码"
+        width="200"
+        align="center"
+      />
+      <!-- 注册时间 -->
+      <el-table-column
+        prop="registrationTime"
+        label="注册时间"
+        width="200"
         align="center"
       >
         <template #default="{ row }">
-          <span>{{ formatDate(row.startTime) }}</span>
+          <span>{{ formatDate(row.registrationTime) }}</span>
         </template>
       </el-table-column>
-      <!-- 放映结束时间 -->
+      <!-- 用户状态 -->
       <el-table-column
-        prop="endTime"
-        label="结束时间"
-        width="250"
+        prop="status"
+        label="用户状态"
+        width="150"
         align="center"
       >
-        <template #default="{ row }">
-          <span>{{ formatDate(row.endTime) }}</span>
-        </template>
-      </el-table-column>
-      <!-- 放映状态 -->
-      <el-table-column prop="status" label="状态" width="150" align="center">
         <template #default="{ row }">
           <el-tag :type="getStatusType(row.status)" disable-transitions>
             {{ row.status }}
@@ -77,7 +78,7 @@
             <el-link
               type="danger"
               size="small"
-              @click="handleDelete(row.scheduleId)"
+              @click="handleDelete(row.userId)"
               >删除</el-link
             >
           </div>
@@ -97,21 +98,21 @@
     </div>
   </div>
 
-  <!-- 放映计划详情 Drawer -->
-  <ScheduleDrawer
+  <!-- 用户详情 Drawer -->
+  <UserDrawer
     :drawerVisible="isDrawerVisible"
     :row="selectedRow"
     @update:drawerVisible="isDrawerVisible = $event"
   />
 
-  <!-- 编辑放映计划 Dialog -->
+  <!-- 编辑用户 Dialog -->
   <EditDialog
     :dialogVisible="isEditDialogVisible"
     :row="selectedRow"
     @update:dialogVisible="isEditDialogVisible = $event"
   />
 
-  <!-- 添加放映计划 Dialog -->
+  <!-- 添加用户 Dialog -->
   <AddDialog
     :dialogVisible="isAddDialogVisible"
     @update:dialogVisible="isAddDialogVisible = $event"
@@ -121,66 +122,46 @@
 <script setup lang="ts">
 import { ref, computed } from "vue";
 import { Plus } from "@element-plus/icons-vue"; // 图标
-import ScheduleDrawer from "./components/detailDrawer.vue";
+import UserDrawer from "./components/detailDrawer.vue";
 import EditDialog from "./components/editDialog.vue";
 import AddDialog from "./components/addDialog.vue";
-import { schedule_data } from "@/test/schedule"; // 示例数据
+import { user_data } from "@/test/user"; // 示例数据
 import Filter from "./components/filter.vue";
 import dayjs from "dayjs"; // 导入 dayjs 库
-import isBetween from "dayjs/plugin/isBetween";
-// 注册插件
-dayjs.extend(isBetween);
+
 // 控制 Drawer 和 Dialog 的显示与隐藏
 const isDrawerVisible = ref(false);
 const isEditDialogVisible = ref(false);
 const isAddDialogVisible = ref(false);
 const selectedRow = ref<Record<string, any> | undefined>(undefined);
 
-// 放映计划数据
-const tableData = ref(schedule_data);
+// 用户数据
+const tableData = ref(user_data);
 const filteredData = ref([...tableData.value]);
 
 // 筛选逻辑
 const filterData = (filters: any) => {
-  const { scheduleId, movieName, aditoriumName, status, screeningTime } =
+  const { userId, userName, userEmail, status, registrationTime, userPhone } =
     filters;
 
   filteredData.value = tableData.value.filter((item) => {
-    const isShowTimeInRange = () => {
-      // 确保 screeningTime 是一个包含两个时间的数组
-      const [startTime, endTime] = screeningTime || [];
-
-      // 如果没有选择时间范围，则跳过时间筛选
-      if (!startTime || !endTime) return true;
-
-      // 将 item 的开始时间和结束时间转换为 dayjs 对象
-      const itemStartTime = dayjs(item.startTime); // item.startTime 转换为 dayjs 对象
-      const itemEndTime = dayjs(item.endTime); // item.endTime 转换为 dayjs 对象
-
-      // 如果 itemStartTime 或 itemEndTime 不是有效的 dayjs 对象，返回 false
-      if (!itemStartTime.isValid() || !itemEndTime.isValid()) {
-        return false;
-      }
-
-      // 将筛选范围的开始和结束时间转换为 dayjs 对象
-      const filterStartTime = dayjs(startTime);
-      const filterEndTime = dayjs(endTime);
-
-      // 检查 item 的开始时间是否在筛选范围内
-      return itemStartTime.isBetween(
-        filterStartTime,
-        filterEndTime,
-        null,
-        "[]"
+    const isRegistrationTimeInRange = () => {
+      if (!registrationTime || registrationTime.length !== 2) return true;
+      const [start, end] = registrationTime;
+      const itemTime = dayjs(item.registrationTime, "YYYY-MM-DD HH:mm:ss");
+      return (
+        itemTime.isAfter(dayjs(start, "YYYY-MM-DD HH:mm:ss")) &&
+        itemTime.isBefore(dayjs(end, "YYYY-MM-DD HH:mm:ss"))
       );
     };
 
     return (
-      (scheduleId ? item.scheduleId.includes(scheduleId) : true) &&
-      (movieName ? item.movieName.includes(movieName) : true) &&
-      (aditoriumName ? item.auditorium.includes(aditoriumName) : true) &&
+      (userId ? item.userId.includes(userId) : true) &&
+      (userName ? item.userName.includes(userName) : true) &&
+      (userEmail ? item.userEmail.includes(userEmail) : true) &&
+      (userPhone ? item.userPhone.includes(userPhone) : true) &&
       (status ? item.status === status : true) &&
-      isShowTimeInRange() // 应用时间筛选
+      isRegistrationTimeInRange()
     );
   });
 };
@@ -193,14 +174,10 @@ const formatDate = (date: string) => {
 // 状态颜色类型
 const getStatusType = (status: string) => {
   switch (status) {
-    case "正在放映":
-      return "success"; // 正在上映：绿色
-    case "已放映":
-      return "info"; // 已放映：蓝色
-    case "未放映":
-      return "danger"; // 已结束：红色
-    default:
-      return "default"; // 默认状态颜色
+    case "活跃":
+      return "success";
+    case "禁用":
+      return "danger";
   }
 };
 
@@ -228,20 +205,17 @@ const handleEdit = (row: any) => {
 };
 
 // 删除操作
-const handleDelete = (scheduleId: string) => {
-  const index = tableData.value.findIndex(
-    (item) => item.scheduleId === scheduleId
-  );
+const handleDelete = (userId: string) => {
+  const index = tableData.value.findIndex((item) => item.userId === userId);
   if (index !== -1) {
     tableData.value.splice(index, 1);
-    console.log(`放映计划 ${scheduleId} 已删除`);
+    console.log(`用户 ${userId} 已删除`);
     filterData({
-      scheduleId: "",
-      movieName: "",
-      auditorium: "",
+      userId: "",
+      userName: "",
+      userEmail: "",
       status: "",
-      startTime: "",
-      endTime: "",
+      registrationTime: [],
     });
   }
 };
@@ -259,7 +233,7 @@ const handlePageChange = (page: number) => {
 </script>
 
 <style scoped>
-#schedule-list {
+#user-list {
   padding: 20px;
   border-radius: 8px;
 }

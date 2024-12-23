@@ -35,12 +35,18 @@
               <span>订单管理</span>
             </template>
             <el-menu-item index="/order_manager/list">订单列表</el-menu-item>
+            <el-menu-item index="/order_manager/data">运营数据</el-menu-item>
+            <el-menu-item index="/order_manager/feedback"
+              >订单反馈</el-menu-item
+            >
           </el-sub-menu>
-
-          <el-menu-item index="/user_manager">
-            <el-icon><UserFilled /></el-icon>
-            <span>用户管理</span>
-          </el-menu-item>
+          <el-sub-menu index="/user_manager">
+            <template #title>
+              <el-icon><UserFilled /></el-icon>
+              <span>用户管理</span>
+            </template>
+            <el-menu-item index="/user_manager/list">用户列表</el-menu-item>
+          </el-sub-menu>
           <el-sub-menu index="/movice_manager">
             <template #title>
               <el-icon><IconMenu /></el-icon>

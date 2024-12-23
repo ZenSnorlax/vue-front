@@ -1,37 +1,49 @@
 <template>
-  <el-dialog v-model="dialogVisible" title="增加影厅" width="500">
-    <el-form :model="form" label-width="100px">
+  <el-dialog v-model="dialogVisible" title="增加影厅" width="500px">
+    <el-form :model="form" label-width="100px" :rules="rules" ref="formRef">
       <!-- 影厅名称 -->
-      <el-form-item label="影厅名称">
-        <el-input v-model="form.name" placeholder="请输入影厅名称" />
+      <el-form-item label="影厅名称" prop="aditoriumName">
+        <el-input v-model="form.aditoriumName" placeholder="请输入影厅名称" />
       </el-form-item>
 
-      <!-- 座位总数 -->
-      <el-form-item label="座位总数">
-        <el-input
-          v-model="form.seats"
-          type="number"
-          placeholder="请输入座位总数"
+      <!-- 电影名称 -->
+      <el-form-item label="电影名称" prop="movieName">
+        <el-input v-model="form.movieName" placeholder="请输入电影名称" />
+      </el-form-item>
+
+      <!-- 订单编号 -->
+      <el-form-item label="订单编号" prop="orderId">
+        <el-input v-model="form.orderId" placeholder="请输入订单编号" />
+      </el-form-item>
+
+      <!-- 用户编号 -->
+      <el-form-item label="用户编号" prop="userId">
+        <el-input v-model="form.userId" placeholder="请输入用户编号" />
+      </el-form-item>
+
+      <!-- 状态 -->
+      <el-form-item label="订单状态" prop="status">
+        <el-select v-model="form.status" placeholder="请选择订单状态">
+          <el-option label="已支付" value="已支付" />
+          <el-option label="未支付" value="未支付" />
+          <el-option label="已确认" value="已确认" />
+          <el-option label="已观看" value="已观看" />
+          <el-option label="已取消" value="已取消" />
+          <el-option label="已退款" value="已退款" />
+        </el-select>
+      </el-form-item>
+
+      <!-- 下单时间 -->
+      <el-form-item label="下单时间" prop="orderTime">
+        <el-date-picker
+          v-model="form.orderTime"
+          type="datetime"
+          placeholder="选择下单时间"
         />
-      </el-form-item>
-
-      <!-- 启用状态 -->
-      <el-form-item label="启用状态">
-        <el-switch
-          v-model="form.status"
-          active-text="启用"
-          inactive-text="禁用"
-          active-value="启用"
-          inactive-value="禁用"
-        />
-      </el-form-item>
-
-      <!-- 影厅负责人 -->
-      <el-form-item label="影厅负责人">
-        <el-input v-model="form.manager" placeholder="请输入影厅负责人姓名" />
       </el-form-item>
     </el-form>
 
+    <!-- 对话框底部 -->
     <template #footer>
       <div class="dialog-footer">
         <el-button @click="closeDialog">取消</el-button>
@@ -42,7 +54,7 @@
 </template>
 
 <script setup lang="ts">
-import { defineProps, defineEmits, ref, reactive, watch } from "vue";
+import { defineProps, defineEmits, ref, watch } from "vue";
 
 // 定义父组件传递的属性
 const props = defineProps({
@@ -55,7 +67,7 @@ const emit = defineEmits(["update:dialogVisible"]);
 // 控制对话框显示
 const dialogVisible = ref(props.dialogVisible);
 
-// 监听 props.visible 的变化，确保同步
+// 监听 props.dialogVisible 的变化，确保同步
 watch(
   () => props.dialogVisible,
   (newVal) => {
@@ -64,12 +76,26 @@ watch(
 );
 
 // 创建表单数据
-const form = reactive({
-  name: "", // 影厅名称
-  seats: 0, // 座位总数
-  status: "禁用", // 启用状态，true 表示启用
-  manager: "", // 影厅负责人
+const form = ref({
+  orderId: "",
+  userId: "",
+  aditoriumName: "",
+  movieName: "",
+  status: "", // 默认状态为空，用户选择时才会设置
+  orderTime: "",
 });
+
+// 表单校验规则
+const rules = {
+  auditoriumName: [
+    { required: true, message: "请输入影厅名称", trigger: "blur" },
+  ],
+  movieName: [{ required: true, message: "请输入电影名称", trigger: "blur" }],
+  orderId: [{ required: true, message: "请输入订单编号", trigger: "blur" }],
+  customerId: [{ required: true, message: "请输入顾客编号", trigger: "blur" }],
+  status: [{ required: true, message: "请选择订单状态", trigger: "change" }],
+  orderTime: [{ required: true, message: "请选择下单时间", trigger: "change" }],
+};
 
 // 关闭对话框
 const closeDialog = () => {
@@ -79,9 +105,9 @@ const closeDialog = () => {
 
 // 确认按钮点击处理
 const handleConfirm = () => {
-  console.log("Form data:", form);
-  // 这里可以处理表单数据，提交API请求等
-  closeDialog(); // 关闭对话框
+  console.log(form.value); // 提交数据
+
+  closeDialog();
 };
 
 // 监听 dialogVisible 的变化并通知父组件
