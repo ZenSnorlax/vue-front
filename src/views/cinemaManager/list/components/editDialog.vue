@@ -42,8 +42,8 @@
 </template>
 
 <script setup lang="ts">
-import { defineProps, defineEmits, ref, reactive, watch } from "vue";
-import { updateAuditorium } from "@/api/index";
+import { defineProps, defineEmits, ref, watch } from "vue";
+import { updateCinema } from "@/api/cinema";
 
 // 定义父组件传递的属性
 const props = defineProps({
