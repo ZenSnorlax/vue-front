@@ -16,17 +16,13 @@
             <el-icon><HomeFilled /></el-icon>
             <span>首页</span>
           </el-menu-item>
-          <el-sub-menu index="/aditorium_manager">
+          <el-sub-menu index="/cinema_manager">
             <template #title>
               <el-icon><IconMenu /></el-icon>
               <span>影厅管理</span>
             </template>
-            <el-menu-item index="/aditorium_manager/list"
-              >影厅列表</el-menu-item
-            >
-            <el-menu-item index="/aditorium_manager/data"
-              >运营数据</el-menu-item
-            >
+            <el-menu-item index="/cinema_manager/list">影厅列表</el-menu-item>
+            <el-menu-item index="/cinema_manager/data">运营数据</el-menu-item>
           </el-sub-menu>
 
           <el-sub-menu index="/order_manager">

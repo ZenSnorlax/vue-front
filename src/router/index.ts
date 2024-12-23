@@ -38,9 +38,9 @@ const routes: Array<RouteRecordRaw> = [
         ],
       },
       {
-        path: "/aditorium_manager",
-        name: "AditoriumManager",
-        redirect: "/aditorium_manager/list", // 默认重定向到子路由
+        path: "/cinema_manager",
+        name: "CinemaManager",
+        redirect: "/cinema_manager/list", // 默认重定向到子路由
         meta: {
           title: "影厅管理",
           requiresAuth: true,
@@ -48,8 +48,8 @@ const routes: Array<RouteRecordRaw> = [
         children: [
           {
             path: "list",
-            component: () => import("@/views/aditoriumManager/list/index.vue"),
-            name: "AditoriumList",
+            component: () => import("@/views/cinemaManager/list/index.vue"),
+            name: "CinemaList",
             meta: {
               title: "影厅列表",
               requiresAuth: true,
@@ -57,8 +57,8 @@ const routes: Array<RouteRecordRaw> = [
           },
           {
             path: "data",
-            component: () => import("@/views/aditoriumManager/data/index.vue"),
-            name: "AditoriumData",
+            component: () => import("@/views/cinemaManager/data/index.vue"),
+            name: "CinemaData",
             meta: {
               title: "运营数据",
             },
@@ -105,8 +105,8 @@ const routes: Array<RouteRecordRaw> = [
         ],
       },
       {
-        path: "movice_manager",
-        redirect: "/movice_manager/schedule", // 默认重定向到子路由
+        path: "movie_manager",
+        redirect: "/movie_manager/schedule", // 默认重定向到子路由
         name: "MovieManager",
         meta: {
           title: "放映管理",
@@ -115,7 +115,7 @@ const routes: Array<RouteRecordRaw> = [
         children: [
           {
             path: "schedule",
-            component: () => import("@/views/moviceManager/schedule/index.vue"),
+            component: () => import("@/views/movieManager/schedule/index.vue"),
             name: "MovieSchedule", // 修正名称
             meta: {
               title: "放映排期",

@@ -90,7 +90,7 @@
 <script setup lang="ts">
 import { ref } from "vue";
 import { Plus } from "@element-plus/icons-vue"; // 图标
-import { table_data } from "@/test/aditorium";
+import { table_data } from "@/test/cinema";
 import EditDialog from "./components/editDialog.vue";
 import AddDialog from "./components/addDialog.vue";
 
