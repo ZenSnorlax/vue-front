@@ -27,7 +27,7 @@
       />
       <!-- 影厅名称 -->
       <el-table-column
-        prop="aditoriumName"
+        prop="cinemaName"
         label="影厅名称"
         width="150"
         align="center"
@@ -155,8 +155,7 @@ const orderStatusList = [
 
 // 筛选逻辑
 const filterData = (filters: any) => {
-  const { orderId, movieName, userId, auditoriumName, status, orderTime } =
-    filters;
+  const { orderId, movieName, userId, cinemaName, status, orderTime } = filters;
 
   filteredData.value = tableData.value.filter((item) => {
     const isOrderTimeInRange = () => {
@@ -173,7 +172,7 @@ const filterData = (filters: any) => {
       (orderId ? item.orderId.includes(orderId) : true) &&
       (movieName ? item.movieName.includes(movieName) : true) &&
       (userId ? item.userId.includes(userId) : true) &&
-      (auditoriumName ? item.aditoriumName.includes(auditoriumName) : true) &&
+      (cinemaName ? item.cinemaName.includes(cinemaName) : true) &&
       (status ? item.status === status : true) &&
       isOrderTimeInRange()
     );

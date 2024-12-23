@@ -11,7 +11,7 @@
 
     <!-- 影厅名称筛选（文本框） -->
     <el-input
-      v-model="filters.aditoriumName"
+      v-model="filters.cinemaName"
       placeholder="请输入影厅名称"
       size="small"
       style="width: 240px"
@@ -75,7 +75,7 @@ const emit = defineEmits(["filterCon"]);
 // 定义筛选条件，状态默认为 "全选"
 const filters = ref({
   movieName: "",
-  aditoriumName: "",
+  cinemaName: "",
   userId: "",
   orderId: "",
   status: "", // 初始为空字符串表示没有选择任何状态

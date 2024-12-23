@@ -1,11 +1,6 @@
 <template>
   <el-drawer v-model="drawer" title="订单详情" :with-header="false" size="40%">
     <div class="drawer-content">
-      <!-- 订单编号 -->
-      <div class="drawer-item">
-        <span class="drawer-label">订单编号：</span>
-        <span class="drawer-value">{{ props.row.orderId }}</span>
-      </div>
       <!-- 用户编号 -->
       <div class="drawer-item">
         <span class="drawer-label">用户编号：</span>
@@ -19,7 +14,7 @@
       <!-- 影厅名称 -->
       <div class="drawer-item">
         <span class="drawer-label">影厅名称：</span>
-        <span class="drawer-value">{{ props.row.aditoriumName }}</span>
+        <span class="drawer-value">{{ props.row.cinemaName }}</span>
       </div>
       <!-- 订单状态 -->
       <div class="drawer-item">

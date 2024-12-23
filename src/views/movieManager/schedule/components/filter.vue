@@ -19,7 +19,7 @@
     />
     <!-- 影厅名称筛选（文本框） -->
     <el-input
-      v-model="filters.aditoriumName"
+      v-model="filters.cinemaName"
       placeholder="请输入影厅名称"
       size="small"
       style="width: 240px"
@@ -67,7 +67,7 @@ const emit = defineEmits<{
 const filters = ref({
   scheduleId: "", // 放映编号
   movieName: "", // 电影名称
-  aditoriumName: "", // 影厅名称
+  cinemaName: "", // 影厅名称
   status: "", // 放映状态
   screeningTime: [] as string[], // 放映时间范围
 });

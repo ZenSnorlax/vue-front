@@ -13,7 +13,7 @@
 
       <!-- 影厅名称 -->
       <el-form-item label="影厅名称">
-        <el-input v-model="form.aditoriumName" placeholder="请输入影厅名称" />
+        <el-input v-model="form.cinemaName" placeholder="请输入影厅名称" />
       </el-form-item>
 
       <!-- 订单状态 -->

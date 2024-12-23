@@ -24,7 +24,7 @@
       />
       <!-- 影厅名称 -->
       <el-table-column
-        prop="auditorium"
+        prop="cinemaName"
         label="影厅名称"
         width="150"
         align="center"
@@ -142,8 +142,7 @@ const filteredData = ref([...tableData.value]);
 
 // 筛选逻辑
 const filterData = (filters: any) => {
-  const { scheduleId, movieName, aditoriumName, status, screeningTime } =
-    filters;
+  const { scheduleId, movieName, cinemaName, status, screeningTime } = filters;
 
   filteredData.value = tableData.value.filter((item) => {
     const isShowTimeInRange = () => {
@@ -178,7 +177,7 @@ const filterData = (filters: any) => {
     return (
       (scheduleId ? item.scheduleId.includes(scheduleId) : true) &&
       (movieName ? item.movieName.includes(movieName) : true) &&
-      (aditoriumName ? item.auditorium.includes(aditoriumName) : true) &&
+      (cinemaName ? item.cinemaName.includes(cinemaName) : true) &&
       (status ? item.status === status : true) &&
       isShowTimeInRange() // 应用时间筛选
     );

@@ -27,7 +27,7 @@ movie_names = [
     "钢铁侠",
     "变形金刚",
 ]
-aditorium_names = [
+cinema_names = [
     "影厅1",
     "影厅2",
     "影厅3",
@@ -100,7 +100,7 @@ def generate_order_data(num: int) -> List[Dict[str, str]]:
                 "orderId": str(random.randint(1000000, 99999999)),
                 "userId": str(random.randint(10000000, 99999999)),
                 "movieName": random.choice(movie_names),
-                "aditoriumName": random.choice(aditorium_names),
+                "cinemaName": random.choice(cinema_names),
                 "status": random.choice(status_options),
                 "orderTime": generate_random_datetime(15),
             }
@@ -125,7 +125,7 @@ def generate_schedule_data(num: int) -> List[Dict[str, str]]:
             {
                 "scheduleId": str(random.randint(1000000, 99999999)),
                 "movieName": movie_name,
-                "auditorium": random.choice(aditorium_names),
+                "cinemaName": random.choice(cinema_names),
                 "startTime": start_time,
                 "endTime": end_time,
                 "status": random.choice(shedule_status_list),
@@ -154,5 +154,5 @@ save_data_to_json(schedule_data, "schedule_data.json")
 # save_data_to_json(feedback_data, "feedback_data.json")
 
 # 生成 1000 条订单数据并保存为 JSON 文件
-# order_data = generate_order_data(1000)
-# save_data_to_json(order_data, "order_data.json")
+order_data = generate_order_data(1000)
+save_data_to_json(order_data, "order_data.json")

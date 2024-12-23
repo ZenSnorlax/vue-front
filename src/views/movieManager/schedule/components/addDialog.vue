@@ -1,32 +1,34 @@
 <template>
-  <el-dialog v-model="dialogVisible" title="增加用户" width="500px">
+  <el-dialog v-model="dialogVisible" title="添加放映" width="500px">
     <el-form :model="form" label-width="100px" ref="formRef">
-      <!-- 用户名称 -->
-      <el-form-item label="用户名称" prop="userName">
-        <el-input v-model="form.userName" placeholder="请输入用户名称" />
+      <!-- 电影名称 -->
+      <el-form-item label="电影名称" prop="movieName">
+        <el-input v-model="form.movieName" placeholder="请输入电影名称" />
       </el-form-item>
-
-      <!-- 邮箱 -->
-      <el-form-item label="邮箱" prop="userEmail">
-        <el-input v-model="form.userEmail" placeholder="请输入邮箱" />
+      <!-- 影厅名称 -->
+      <el-form-item label="影厅名称" prop="cinemaName">
+        <el-input v-model="form.cinemaName" placeholder="请输入影厅名称" />
       </el-form-item>
-      <!-- 手机号码 -->
-      <el-form-item label="手机号" prop="userPhone">
-        <el-input v-model="form.userPhone" placeholder="请输入手机号" />
-      </el-form-item>
-
-      <!-- 用户状态 -->
-      <el-form-item label="用户状态" prop="status">
-        <el-select v-model="form.status" placeholder="请选择用户状态">
-          <el-option label="活跃" value="活跃" />
-          <el-option label="禁用" value="禁用" />
+      <!--放映状态-->
+      <el-form-item label="放映状态" prop="status">
+        <el-select v-model="form.status" placeholder="请选择订单状态">
+          <el-option label="未放映" value="未放映" />
+          <el-option label="正在放映" value="正在放映" />
+          <el-option label="已放映" value="已放映" />
         </el-select>
       </el-form-item>
-
-      <!-- 注册时间 -->
-      <el-form-item label="注册时间" prop="registrationTime">
+      <!-- 开始时间 -->
+      <el-form-item label="开始时间" prop="startTime">
         <el-date-picker
-          v-model="form.registrationTime"
+          v-model="form.startTime"
+          type="datetime"
+          placeholder="选择注册时间"
+        />
+      </el-form-item>
+      <!-- 结束时间 -->
+      <el-form-item label="结束时间" prop="endTime">
+        <el-date-picker
+          v-model="form.endTime"
           type="datetime"
           placeholder="选择注册时间"
         />
@@ -67,11 +69,11 @@ watch(
 
 // 创建表单数据
 const form = ref({
-  userName: "",
+  movieName: "",
+  cinemaName: "",
   status: "", // 默认状态为空，用户选择时才会设置
-  registrationTime: "",
-  userEmail: "",
-  userPhone: "",
+  startTime: "",
+  endTime: "",
 });
 
 // 关闭对话框

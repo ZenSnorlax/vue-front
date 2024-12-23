@@ -6,11 +6,6 @@
         <el-input v-model="form.userName" placeholder="请输入订单编号" />
       </el-form-item>
 
-      <!-- 用户编号  -->
-      <el-form-item label="用户编号">
-        <el-input v-model="form.userId" placeholder="请输入用户编号" />
-      </el-form-item>
-
       <!-- 邮箱 -->
       <el-form-item label="邮箱">
         <el-input v-model="form.userEmail" placeholder="请输入邮箱" />
