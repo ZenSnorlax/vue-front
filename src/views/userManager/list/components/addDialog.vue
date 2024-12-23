@@ -24,9 +24,9 @@
       </el-form-item>
 
       <!-- 注册时间 -->
-      <el-form-item label="注册时间" prop="registrationTime">
+      <el-form-item label="注册时间" prop="registerTime">
         <el-date-picker
-          v-model="form.registrationTime"
+          v-model="form.registerTime"
           type="datetime"
           placeholder="选择注册时间"
         />
@@ -70,7 +70,7 @@ watch(
 const form = ref({
   userName: "",
   status: "", // 默认状态为空，用户选择时才会设置
-  registrationTime: "",
+  registerTime: "",
   userEmail: "",
   userPhone: "",
 });

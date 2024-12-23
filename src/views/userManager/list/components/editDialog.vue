@@ -89,7 +89,7 @@ const closeDialog = () => {
 
 // 确认按钮点击处理
 const handleConfirm = async () => {
-  await updateUser(form.value);
+  await updateUser(form.value.userId, form.value);
   console.log(form.value);
   closeDialog();
 };

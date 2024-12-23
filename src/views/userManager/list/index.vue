@@ -33,13 +33,13 @@
         align="center"
       />
       <el-table-column
-        prop="registrationTime"
+        prop="registerTime"
         label="注册时间"
         width="200"
         align="center"
       >
         <template #default="{ row }">
-          <span>{{ formatDate(row.registrationTime) }}</span>
+          <span>{{ formatDate(row.registerTime) }}</span>
         </template>
       </el-table-column>
       <el-table-column

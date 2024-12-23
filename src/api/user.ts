@@ -34,19 +34,19 @@ export async function getUsersPaginated(
   });
 }
 
-// **创建用户**
+/**创建用户 */
 export async function createUser(data: UserData) {
-  return await service({
-    url: "/api/users/create",
+  return service({
+    url: "/api/users",
     method: "post",
     data, // 新用户数据
   });
 }
 
 // **更新用户信息**
-export async function updateUser(data: UserData) {
-  return await service({
-    url: "/api/users/updata",
+export async function updateUser(id: string, data: UserData) {
+  return service({
+    url: `/api/users/${id}`,
     method: "put",
     data, // 用户更新数据
   });
@@ -54,9 +54,8 @@ export async function updateUser(data: UserData) {
 
 // **删除用户**
 export async function deleteUser(id: string) {
-  return await service({
-    url: `/api/users/delete`,
+  return service({
+    url: `/api/users/${id}`,
     method: "delete",
-    data: { id },
   });
 }
