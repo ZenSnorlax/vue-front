@@ -118,7 +118,7 @@ import EditDialog from "./components/editDialog.vue";
 import AddDialog from "./components/addDialog.vue";
 import Filter from "./components/filter.vue";
 import dayjs from "dayjs";
-import { getUsersPaginated } from "@/api/user";
+import { getUsersPaginated, deleteUser } from "@/api/user";
 
 // 控制 Drawer 和 Dialog 的显示与隐藏
 const isDrawerVisible = ref(false);
@@ -191,6 +191,7 @@ const handleEdit = (row: any) => {
 // 删除操作
 const handleDelete = async (userId: string) => {
   // 调用删除 API，重新加载数据
+  await deleteUser(userId);
   console.log(`用户 ${userId} 已删除`);
   fetchPaginatedData();
 };

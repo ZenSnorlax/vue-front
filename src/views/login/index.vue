@@ -30,6 +30,7 @@
 <script setup lang="ts">
 import { ref } from "vue";
 import { useRouter } from "vue-router"; // 引入 Vue Router
+import { login } from "@/api/login";
 
 const username = ref("");
 const password = ref("");
@@ -37,19 +38,21 @@ const errorMessage = ref(""); // 用于存储错误消息
 
 const router = useRouter(); // 获取路由实例
 
-const handleSubmit = () => {
+const handleSubmit = async () => {
   // 清空上一次的错误消息
   errorMessage.value = "";
+  const response = await login({
+    username: username.value,
+    password: password.value,
+  });
+  if (response.status == 200) {
+    const token = response.data.token;
 
-  // 模拟登录
-  if (username.value === "admin" && password.value === "123456") {
-    console.log("登陆成功");
-    const token = "your-unique-token";
     localStorage.setItem("token", token);
-    router.push("/dashboard");
-  } else {
-    // 登录失败，显示错误信息
-    errorMessage.value = "用户名或密码错误";
+
+    console.log("登录成功:", response.data);
+
+    router.push("/");
   }
 };
 </script>

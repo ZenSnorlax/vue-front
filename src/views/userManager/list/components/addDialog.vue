@@ -45,6 +45,7 @@
 
 <script setup lang="ts">
 import { defineProps, defineEmits, ref, watch } from "vue";
+import { createUser } from "@/api/user";
 
 // 定义父组件传递的属性
 const props = defineProps({
@@ -81,9 +82,9 @@ const closeDialog = () => {
 };
 
 // 确认按钮点击处理
-const handleConfirm = () => {
+const handleConfirm = async () => {
+  await createUser(form.value);
   console.log(form.value); // 提交数据
-
   closeDialog();
 };
 
