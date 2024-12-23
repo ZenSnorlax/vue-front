@@ -43,12 +43,12 @@
             </template>
             <el-menu-item index="/user_manager/list">用户列表</el-menu-item>
           </el-sub-menu>
-          <el-sub-menu index="/movice_manager">
+          <el-sub-menu index="/movie_manager">
             <template #title>
               <el-icon><IconMenu /></el-icon>
               <span>放映管理</span>
             </template>
-            <el-menu-item index="/movice_manager/schedule"
+            <el-menu-item index="/movie_manager/schedule"
               >放映排期</el-menu-item
             >
           </el-sub-menu>
