@@ -42,7 +42,8 @@
 </template>
 
 <script setup lang="ts">
-import { defineProps, defineEmits, ref, reactive, watch } from "vue";
+import { defineProps, defineEmits, ref, watch } from "vue";
+import { createCinema } from "@/api/cinema";
 
 // 定义父组件传递的属性
 const props = defineProps({
@@ -64,7 +65,8 @@ watch(
 );
 
 // 创建表单数据
-const form = reactive({
+const form = ref({
+  id: "",
   name: "", // 影厅名称
   seats: 0, // 座位总数
   status: "禁用", // 启用状态，true 表示启用
@@ -78,7 +80,8 @@ const closeDialog = () => {
 };
 
 // 确认按钮点击处理
-const handleConfirm = () => {
+const handleConfirm = async () => {
+  await createCinema(form.value);
   console.log("Form data:", form);
   // 这里可以处理表单数据，提交API请求等
   closeDialog(); // 关闭对话框

@@ -2,24 +2,24 @@ import service from "@/utils/request";
 
 // 影厅数据定义
 interface CinemaData {
+  id: string;
   name: string;
   status: string;
   manager: string;
-  totalSeats: number;
-  header: string;
+  seats: number;
 }
 
 /** 获取影厅列表 */
-export function getCinemas() {
-  return service({
+export async function getCinemas() {
+  return await service({
     url: "/api/cinemas",
     method: "get",
   });
 }
 
 /** 获取影厅座位示意图 */
-export function getCinemaImage(id: string) {
-  return service({
+export async function getCinemaImage(id: string) {
+  return await service({
     url: `/api/cinemas/image/${id}.png`,
     method: "get",
     responseType: "blob", // 返回二进制数据（图片）
@@ -27,8 +27,8 @@ export function getCinemaImage(id: string) {
 }
 
 /** 上传影厅座位示意图 */
-export function uploadCinemaImage(id: string, image: FormData) {
-  return service({
+export async function uploadCinemaImage(id: string, image: FormData) {
+  return await service({
     url: `/api/cinemas/image/${id}.png`,
     method: "post",
     headers: {
@@ -39,23 +39,23 @@ export function uploadCinemaImage(id: string, image: FormData) {
 }
 
 /** 获取影厅收入 */
-export function getCinemaIncome() {
-  return service({
+export async function getCinemaIncome() {
+  return await service({
     url: "/api/cinemas/income",
     method: "get",
   });
 }
 
 /** 删除影厅 */
-export function deleteCinema(id: string) {
-  return service({
+export async function deleteCinema(id: string) {
+  return await service({
     url: `/api/cinemas/${id}`,
     method: "delete",
   });
 }
 
 /** 新增影厅 */
-export function createCinema(data: CinemaData) {
+export async function createCinema(data: CinemaData) {
   return service({
     url: "/api/cinemas",
     method: "post",
@@ -64,8 +64,8 @@ export function createCinema(data: CinemaData) {
 }
 
 /** 修改影厅信息 */
-export function updateCinema(id: string, data: CinemaData) {
-  return service({
+export async function updateCinema(id: string, data: CinemaData) {
+  return await service({
     url: `/api/cinemas/${id}`,
     method: "put",
     data,

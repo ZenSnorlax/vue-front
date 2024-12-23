@@ -45,12 +45,21 @@
 import { defineProps, defineEmits, ref, watch } from "vue";
 import { updateCinema } from "@/api/cinema";
 
+// 定义 CinemaData 类型
+interface CinemaData {
+  id: string; // id 为 string 类型
+  name: string;
+  status: string; // 可选 string 或 boolean，具体根据业务需求
+  manager: string;
+  seats: number;
+}
+
 // 定义父组件传递的属性
 const props = defineProps({
   dialogVisible: { type: Boolean, default: false },
   row: {
-    type: Object,
-    default: null,
+    type: Object as () => Partial<CinemaData>,
+    default: () => ({}),
   },
 });
 
@@ -60,8 +69,14 @@ const emit = defineEmits(["update:dialogVisible"]);
 // 控制对话框显示
 const dialogVisible = ref(props.dialogVisible);
 
-// 使用深拷贝确保 `form` 数据不直接引用 `props.row`
-const form = ref({ ...props.row });
+// 初始化 form 数据，确保字段完整
+const form = ref<CinemaData>({
+  id: String(props.row?.id || ""), // 确保 id 为 string 类型
+  name: props.row?.name || "",
+  status: props.row?.status || "禁用",
+  manager: props.row?.manager || "",
+  seats: Number(props.row?.seats) || 0, // 确保 seats 为 number 类型
+});
 
 // 监听 props.dialogVisible 的变化，确保同步
 watch(
@@ -75,7 +90,13 @@ watch(
 watch(
   () => props.row,
   (newVal) => {
-    form.value = { ...newVal }; // 使用深拷贝
+    form.value = {
+      id: String(newVal?.id || ""), // 转换为 string
+      name: newVal?.name || "",
+      status: newVal?.status || "禁用",
+      manager: newVal?.manager || "",
+      seats: Number(newVal?.seats) || 0,
+    };
   }
 );
 
@@ -86,10 +107,9 @@ const closeDialog = () => {
 };
 
 // 确认按钮点击处理
-const handleConfirm = () => {
-  console.log("Form data:", form);
-  // 这里可以处理表单数据，提交API请求等
-  closeDialog(); // 关闭对话框
+const handleConfirm = async () => {
+  const cinemaData: CinemaData = { ...form.value }; // 确保类型一致
+  await updateCinema(cinemaData.id, cinemaData);
 };
 
 // 监听 dialogVisible 的变化并通知父组件
