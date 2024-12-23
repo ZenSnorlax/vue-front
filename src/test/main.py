@@ -102,7 +102,7 @@ def generate_order_data(num: int) -> List[Dict[str, str]]:
                 "movieName": random.choice(movie_names),
                 "cinemaName": random.choice(cinema_names),
                 "status": random.choice(status_options),
-                "orderTime": generate_random_datetime(15),
+                "orderTime": generate_random_datetime(365),
             }
         )
     return order_data
@@ -142,8 +142,8 @@ def save_data_to_json(data: List[Dict], file_path: str) -> None:
 
 
 # 生成 1000 条放映计划数据并保存为 JSON 文件
-schedule_data = generate_schedule_data(100)
-save_data_to_json(schedule_data, "schedule_data.json")
+#schedule_data = generate_schedule_data(100)
+#save_data_to_json(schedule_data, "schedule_data.json")
 
 # 生成 10 个用户数据并保存为 JSON 文件
 #user_data = generate_user_data(1000)
@@ -154,5 +154,5 @@ save_data_to_json(schedule_data, "schedule_data.json")
 # save_data_to_json(feedback_data, "feedback_data.json")
 
 # 生成 1000 条订单数据并保存为 JSON 文件
-order_data = generate_order_data(1000)
+order_data = generate_order_data(10000)
 save_data_to_json(order_data, "order_data.json")

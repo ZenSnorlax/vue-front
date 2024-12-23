@@ -43,7 +43,6 @@
 <script setup lang="ts">
 import { defineProps, defineEmits, ref, watch } from "vue";
 // 导入更新订单数据的API（例如，updateOrder）
-import { updateOrder } from "@/api/index";
 
 // 定义父组件传递的属性
 const props = defineProps({

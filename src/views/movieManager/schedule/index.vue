@@ -120,7 +120,6 @@ import isBetween from "dayjs/plugin/isBetween";
 // 注册插件
 dayjs.extend(isBetween);
 // 控制 Drawer 和 Dialog 的显示与隐藏
-const isDrawerVisible = ref(false);
 const isEditDialogVisible = ref(false);
 const isAddDialogVisible = ref(false);
 const selectedRow = ref<Record<string, any> | undefined>(undefined);
@@ -202,12 +201,6 @@ const paginatedData = computed(() => {
   const end = start + pageSize.value;
   return filteredData.value.slice(start, end);
 });
-
-// 查看详情操作
-const handleDetail = (row: any) => {
-  isDrawerVisible.value = true;
-  selectedRow.value = row;
-};
 
 // 编辑操作
 const handleEdit = (row: any) => {

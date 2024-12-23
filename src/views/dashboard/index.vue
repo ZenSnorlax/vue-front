@@ -22,38 +22,45 @@ onMounted(() => {
       renderer: "svg",
     });
 
-    // 定义图表的配置项
+    // 定义折线图的配置项
     const option: EChartsOption = {
       title: {
-        text: "Referer of a Website",
-        subtext: "Fake Data",
+        text: "Total Revenue Over Time",
         left: "center",
       },
       tooltip: {
-        trigger: "item",
+        trigger: "axis",
       },
-      legend: {
-        orient: "vertical",
-        left: "left",
+      xAxis: {
+        type: "category",
+        boundaryGap: false,
+        data: ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep"],
+      },
+      yAxis: {
+        type: "value",
+        axisLabel: {
+          formatter: "{value}元", // 格式化为货币单位
+        },
       },
       series: [
         {
-          name: "Access From",
-          type: "pie",
-          radius: "50%",
-          data: [
-            { value: 1048, name: "Search Engine" },
-            { value: 735, name: "Direct" },
-            { value: 580, name: "Email" },
-            { value: 484, name: "Union Ads" },
-            { value: 300, name: "Video Ads" },
-          ],
-          emphasis: {
-            itemStyle: {
-              shadowBlur: 10,
-              shadowOffsetX: 0,
-              shadowColor: "rgba(0, 0, 0, 0.5)",
-            },
+          name: "Revenue",
+          type: "line",
+          smooth: true,
+          data: [8200, 9320, 9010, 9340, 12940, 13300, 13200, 14100, 15300],
+          areaStyle: {
+            color: "rgba(128, 128, 255, 0.3)", // 渐变区域颜色
+          },
+          lineStyle: {
+            color: "#5470C6", // 折线颜色
+            width: 2,
+          },
+          symbol: "circle",
+          symbolSize: 8,
+          itemStyle: {
+            color: "#5470C6",
+            borderColor: "#fff",
+            borderWidth: 2,
           },
         },
       ],
