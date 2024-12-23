@@ -60,18 +60,19 @@
       >
         <template #default="{ row }">
           <div class="button-container">
-            <el-link type="primary" size="small" @click="handleDetail(row)"
-              >详情</el-link
-            >
-            <el-link type="success" size="small" @click="handleEdit(row)"
-              >编辑</el-link
-            >
+            <el-link type="primary" size="small" @click="handleDetail(row)">
+              详情
+            </el-link>
+            <el-link type="success" size="small" @click="handleEdit(row)">
+              编辑
+            </el-link>
             <el-link
               type="danger"
               size="small"
               @click="handleDelete(row.userId)"
-              >删除</el-link
             >
+              删除
+            </el-link>
           </div>
         </template>
       </el-table-column>
@@ -131,12 +132,14 @@ const tableData = ref([]);
 const totalRecords = ref(0);
 const currentPage = ref(1);
 const pageSize = ref(10);
+
+// 筛选条件初始化
 const filters = ref({
   userName: "",
   userId: "",
   userEmail: "",
   status: "",
-  range: [] as string[], // 类型为字符串数组
+  range: [] as string[],
   userPhone: "",
 });
 
@@ -150,13 +153,10 @@ const getStatusType = (status: string) => {
       return "success";
     case "禁用":
       return "danger";
+    default:
+      return "info";
   }
 };
-
-const { userName, userId, userEmail, userPhone, range, status } = filters.value;
-
-let startTime = range[0];
-let endTime = range[1];
 
 // 获取分页数据
 const fetchPaginatedData = async () => {
@@ -164,18 +164,18 @@ const fetchPaginatedData = async () => {
     const response = await getUsersPaginated({
       pageSize: pageSize.value,
       page: currentPage.value,
-      userName,
-      userId,
-      userEmail,
-      userPhone,
-      status,
-      startTime,
-      endTime,
+      userName: filters.value.userName,
+      userId: filters.value.userId,
+      userEmail: filters.value.userEmail,
+      userPhone: filters.value.userPhone,
+      status: filters.value.status,
+      startTime: filters.value.range[0],
+      endTime: filters.value.range[1],
     });
 
     const { total, data } = response.data.contents;
-    totalRecords.value = total; // 更新总记录数
-    tableData.value = data; // 更新表格数据
+    totalRecords.value = total;
+    tableData.value = data;
   } catch (error) {
     console.error("获取分页数据失败:", error);
   }
@@ -183,8 +183,12 @@ const fetchPaginatedData = async () => {
 
 // 筛选逻辑
 const handleFilter = (newFilters: any) => {
-  filters.value = newFilters;
-  currentPage.value = 1; // 筛选后回到第一页
+  filters.value = {
+    ...filters.value,
+    ...newFilters,
+    range: newFilters.range || [],
+  };
+  currentPage.value = 1;
   fetchPaginatedData();
 };
 
@@ -208,10 +212,13 @@ const handleEdit = (row: any) => {
 
 // 删除操作
 const handleDelete = async (userId: string) => {
-  // 调用删除 API，重新加载数据
-  await deleteUser(userId);
-  console.log(`用户 ${userId} 已删除`);
-  fetchPaginatedData();
+  try {
+    await deleteUser(userId);
+    console.log(`用户 ${userId} 已删除`);
+    fetchPaginatedData();
+  } catch (error) {
+    console.error("删除失败:", error);
+  }
 };
 
 // 添加操作
