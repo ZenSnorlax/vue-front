@@ -1,41 +1,41 @@
 <template>
-  <el-drawer v-model="drawer" title="订单详情" :with-header="false" size="40%">
+  <el-drawer v-model="drawer" title="用户详情" :with-header="false" size="40%">
     <div class="drawer-content">
-      <!-- 订单编号 -->
-      <div class="drawer-item">
-        <span class="drawer-label">订单编号：</span>
-        <span class="drawer-value">{{ props.row.orderId }}</span>
-      </div>
       <!-- 用户编号 -->
       <div class="drawer-item">
         <span class="drawer-label">用户编号：</span>
         <span class="drawer-value">{{ props.row.userId }}</span>
       </div>
-      <!-- 电影名称 -->
+      <!-- 用户名称 -->
       <div class="drawer-item">
-        <span class="drawer-label">电影名称：</span>
-        <span class="drawer-value">{{ props.row.movieName }}</span>
+        <span class="drawer-label">用户名称：</span>
+        <span class="drawer-value">{{ props.row.userName }}</span>
       </div>
-      <!-- 影厅名称 -->
+      <!-- 邮箱 -->
       <div class="drawer-item">
-        <span class="drawer-label">影厅名称：</span>
-        <span class="drawer-value">{{ props.row.aditoriumName }}</span>
+        <span class="drawer-label">邮箱：</span>
+        <span class="drawer-value">{{ props.row.userEmail }}</span>
       </div>
-      <!-- 订单状态 -->
+      <!-- 手机号 -->
       <div class="drawer-item">
-        <span class="drawer-label">订单状态：</span>
+        <span class="drawer-label">手机号：</span>
+        <span class="drawer-value">{{ props.row.userPhone }}</span>
+      </div>
+      <!-- 用户状态 -->
+      <div class="drawer-item">
+        <span class="drawer-label">用户状态：</span>
         <span class="drawer-value">
           <el-tag :type="getStatusTagType(props.row.status)">
             {{ props.row.status }}
           </el-tag>
         </span>
       </div>
-      <!-- 下单时间 -->
+      <!-- 注册时间 -->
       <div class="drawer-item">
-        <span class="drawer-label">下单时间：</span>
-        <span class="drawer-value">
-          {{ formatOrderTime(props.row.orderTime) }}
-        </span>
+        <span class="drawer-label">注册时间：</span>
+        <span class="drawer-value">{{
+          formatOrderTime(props.row.registrationTime)
+        }}</span>
       </div>
     </div>
   </el-drawer>
@@ -81,24 +81,15 @@ const formatOrderTime = (orderTime: string) => {
 // 获取状态的 tag 类型
 const getStatusTagType = (status: string) => {
   switch (status) {
-    case "已支付":
+    case "活跃":
       return "success";
-    case "未支付":
-      return "warning";
-    case "已确认":
-      return "info";
-    case "已观看":
-      return "success";
-    case "已取消":
-      return "danger";
-    case "已退款":
+    case "禁用":
       return "danger";
     default:
       return "default";
   }
 };
 </script>
-
 <style scoped>
 /* 抽屉内容区域 */
 .drawer-content {
@@ -111,6 +102,7 @@ const getStatusTagType = (status: string) => {
 .drawer-item {
   display: flex;
   justify-content: space-between;
+  align-items: center; /* 确保内容垂直居中对齐 */
   margin-bottom: 16px;
   font-size: 14px;
 }

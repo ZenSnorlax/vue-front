@@ -68,9 +68,6 @@
       >
         <template #default="{ row }">
           <div class="button-container">
-            <el-link type="primary" size="small" @click="handleDetail(row)">
-              详情
-            </el-link>
             <el-link type="success" size="small" @click="handleEdit(row)">
               编辑
             </el-link>
@@ -97,13 +94,6 @@
     </div>
   </div>
 
-  <!-- 放映计划详情 Drawer -->
-  <ScheduleDrawer
-    :drawerVisible="isDrawerVisible"
-    :row="selectedRow"
-    @update:drawerVisible="isDrawerVisible = $event"
-  />
-
   <!-- 编辑放映计划 Dialog -->
   <EditDialog
     :dialogVisible="isEditDialogVisible"
@@ -121,7 +111,6 @@
 <script setup lang="ts">
 import { ref, computed } from "vue";
 import { Plus } from "@element-plus/icons-vue"; // 图标
-import ScheduleDrawer from "./components/detailDrawer.vue";
 import EditDialog from "./components/editDialog.vue";
 import AddDialog from "./components/addDialog.vue";
 import { schedule_data } from "@/test/schedule"; // 示例数据
