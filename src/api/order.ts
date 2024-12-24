@@ -65,10 +65,26 @@ export async function updateOrder(id: string, data: OrderData) {
   });
 }
 
+interface feedbackData {
+  orderId?: string;
+  userId?: string;
+  movieName?: string;
+  message?: string;
+  rate?: number;
+  feedbackTime?: string;
+}
+// 筛选参数定义
+interface FiltersParams extends Partial<feedbackData & TimeRange> {
+  [key: string]: any; // 允许扩展其他动态参数
+}
+
 /** 获取订单反馈列表 */
-export async function getOrderFeedback() {
+export async function getFeedbackPaginated(
+  params: PaginationParams & FiltersParams
+) {
   return await service({
     url: "/api/orders/feedback",
     method: "get",
+    params,
   });
 }

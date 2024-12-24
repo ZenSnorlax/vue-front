@@ -78,7 +78,7 @@ const filters = ref({
   cinemaName: "",
   userId: "",
   orderId: "",
-  status: "", // 初始为空字符串表示未选择状态
+  status: "",
   startTime: "",
   endTime: "",
 });
