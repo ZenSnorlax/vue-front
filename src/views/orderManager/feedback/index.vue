@@ -26,7 +26,7 @@
         align="center"
       />
       <el-table-column
-        prop="feedback"
+        prop="message"
         label="评价信息"
         width="400"
         align="center"
@@ -35,7 +35,7 @@
         <template #default="{ row }">
           <el-rate
             disabled
-            v-model="row.rating"
+            v-model="row.rate"
             show-text
             text-color="#ff9900"
             count="5"

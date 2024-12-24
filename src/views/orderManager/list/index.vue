@@ -22,7 +22,7 @@
         width="150"
         align="center"
       />
-      <!-- 影厅名称 -->
+      <!-- tableData影厅名称 -->
       <el-table-column
         prop="cinemaName"
         label="影厅名称"
