@@ -16,6 +16,17 @@
         <span class="drawer-label">影厅名称：</span>
         <span class="drawer-value">{{ props.row.cinemaName }}</span>
       </div>
+      <!--订单价格-->
+      <div class="drawer-item">
+        <span class="drawer-label">订单价格：</span>
+        <span class="drawer-value">{{ props.row.price }}</span>
+      </div>
+
+      <div class="drawer-item">
+        <span class="drawer-label">座位号：</span>
+        <span class="drawer-value">{{ props.row.seat }}</span>
+      </div>
+
       <!-- 订单状态 -->
       <div class="drawer-item">
         <span class="drawer-label">订单状态：</span>

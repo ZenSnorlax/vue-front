@@ -159,14 +159,19 @@ const pagination = ref({
 // 筛选条件
 const filters = ref();
 
-// 获取状态标签颜色
 const getStatusType = (status: string): string => {
   switch (status) {
-    case "已完成":
+    case "未支付":
       return "success";
-    case "进行中":
+    case "已支付":
       return "info";
+    case "已确认":
+      return "warning";
+    case "已观看":
+      return "success";
     case "已取消":
+      return "danger";
+    case "已退款":
       return "danger";
     default:
       return "warning";
@@ -206,7 +211,6 @@ const handleFilter = (filterParams: any) => {
 const handleDelete = async (orderId: string) => {
   try {
     await deleteOrder(orderId);
-    fetchData(); // 删除成功后刷新数据
   } catch (error) {
     console.error(`删除订单 ${orderId} 失败:`, error);
   }
@@ -230,7 +234,6 @@ const handleAdd = () => {
   selectedRow.value = undefined;
 };
 
-// 生命周期钩子
 onMounted(() => {
   fetchData();
 });

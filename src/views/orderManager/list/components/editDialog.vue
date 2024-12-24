@@ -16,6 +16,13 @@
         <el-input v-model="form.cinemaName" placeholder="请输入影厅名称" />
       </el-form-item>
 
+      <el-form-item label="订单价格">
+        <el-input v-model="form.price" placeholder="请输入订单价格" />
+      </el-form-item>
+
+      <el-form-item label="座位号">
+        <el-input v-model="form.seat" placeholder="请输入座位号" />
+      </el-form-item>
       <!-- 订单状态 -->
       <el-form-item label="订单状态">
         <el-select v-model="form.status" placeholder="请选择订单状态">
@@ -51,7 +58,7 @@
 <script setup lang="ts">
 import { defineProps, defineEmits, ref, watch } from "vue";
 // 导入更新订单数据的API（例如，updateOrder）
-import { updateOrder } from "@/api/index";
+import { updateOrder } from "@/api/order";
 
 // 定义父组件传递的属性
 const props = defineProps({
@@ -92,7 +99,8 @@ const closeDialog = () => {
 };
 
 // 确认按钮点击处理
-const handleConfirm = () => {
+const handleConfirm = async () => {
+  await updateOrder(form.value.id, form.value);
   closeDialog();
 };
 

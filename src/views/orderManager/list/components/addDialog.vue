@@ -1,9 +1,9 @@
 <template>
   <el-dialog v-model="dialogVisible" title="增加影厅" width="500px">
-    <el-form :model="form" label-width="100px" :rules="rules" ref="formRef">
+    <el-form :model="form" label-width="100px" ref="formRef">
       <!-- 影厅名称 -->
-      <el-form-item label="影厅名称" prop="aditoriumName">
-        <el-input v-model="form.aditoriumName" placeholder="请输入影厅名称" />
+      <el-form-item label="影厅名称" prop="cinemaName">
+        <el-input v-model="form.cinemaName" placeholder="请输入影厅名称" />
       </el-form-item>
 
       <!-- 电影名称 -->
@@ -11,14 +11,19 @@
         <el-input v-model="form.movieName" placeholder="请输入电影名称" />
       </el-form-item>
 
-      <!-- 订单编号 -->
-      <el-form-item label="订单编号" prop="orderId">
-        <el-input v-model="form.orderId" placeholder="请输入订单编号" />
-      </el-form-item>
-
       <!-- 用户编号 -->
       <el-form-item label="用户编号" prop="userId">
         <el-input v-model="form.userId" placeholder="请输入用户编号" />
+      </el-form-item>
+
+      <!-- 座位号 -->
+      <el-form-item label="座位号" prop="seat">
+        <el-input v-model="form.seat" placeholder="请输入座位号" />
+      </el-form-item>
+
+      <!-- 价格 -->
+      <el-form-item label="票价" prop="price">
+        <el-input v-model="form.price" placeholder="请输入票价" />
       </el-form-item>
 
       <!-- 状态 -->
@@ -55,6 +60,7 @@
 
 <script setup lang="ts">
 import { defineProps, defineEmits, ref, watch } from "vue";
+import { createOrder } from "@/api/order";
 
 // 定义父组件传递的属性
 const props = defineProps({
@@ -75,27 +81,16 @@ watch(
   }
 );
 
-// 创建表单数据
 const form = ref({
   orderId: "",
   userId: "",
-  aditoriumName: "",
+  seat: 0,
+  price: 0,
+  cinemaName: "",
   movieName: "",
-  status: "", // 默认状态为空，用户选择时才会设置
+  status: "",
   orderTime: "",
 });
-
-// 表单校验规则
-const rules = {
-  auditoriumName: [
-    { required: true, message: "请输入影厅名称", trigger: "blur" },
-  ],
-  movieName: [{ required: true, message: "请输入电影名称", trigger: "blur" }],
-  orderId: [{ required: true, message: "请输入订单编号", trigger: "blur" }],
-  customerId: [{ required: true, message: "请输入顾客编号", trigger: "blur" }],
-  status: [{ required: true, message: "请选择订单状态", trigger: "change" }],
-  orderTime: [{ required: true, message: "请选择下单时间", trigger: "change" }],
-};
 
 // 关闭对话框
 const closeDialog = () => {
@@ -104,9 +99,9 @@ const closeDialog = () => {
 };
 
 // 确认按钮点击处理
-const handleConfirm = () => {
-  console.log(form.value); // 提交数据
-
+const handleConfirm = async () => {
+  await createOrder(form.value);
+  console.log(form.value);
   closeDialog();
 };
 

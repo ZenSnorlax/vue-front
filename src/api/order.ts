@@ -39,6 +39,15 @@ export async function getOrdersPaginated(
   });
 }
 
+/**增加订单 */
+export async function createOrder(data: OrderData) {
+  return await service({
+    url: "/api/orders",
+    method: "post",
+    data,
+  });
+}
+
 /** 删除订单 */
 export async function deleteOrder(id: string) {
   return await service({
