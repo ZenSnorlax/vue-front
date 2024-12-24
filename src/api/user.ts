@@ -8,10 +8,11 @@ interface UserData {
   userPhone?: string; // 用户手机
   status?: string; // 用户状态
   registerTime?: string;
+}
+interface TimeRange {
   startTime?: string; // 注册时间范围
   endTime?: string;
 }
-
 // 分页参数定义
 interface PaginationParams {
   page: number; // 当前页码
@@ -19,7 +20,7 @@ interface PaginationParams {
 }
 
 // 筛选参数定义
-interface FilterParams extends Partial<UserData> {
+interface FilterParams extends Partial<UserData & TimeRange> {
   [key: string]: any; // 允许扩展其他动态参数
 }
 
