@@ -57,7 +57,7 @@
         align="center"
       >
         <template #default="{ row }">
-          <span>{{ row.orderTime }}</span>
+          <span>{{ formatDate(row.orderTime) }}</span>
         </template>
       </el-table-column>
       <!-- 操作 -->
@@ -129,6 +129,7 @@ import EditDialog from "./components/editDialog.vue";
 import AddDialog from "./components/addDialog.vue";
 import Filter from "./components/filter.vue";
 import { getOrdersPaginated, deleteOrder } from "@/api/order";
+import dayjs from "dayjs";
 
 // 定义表格数据类型
 interface Order {
@@ -177,7 +178,10 @@ const getStatusType = (status: string): string => {
       return "warning";
   }
 };
-
+// 格式化时间
+const formatDate = (date: string) => {
+  return dayjs(date).format("YYYY-MM-DD HH:mm:ss");
+};
 // 获取数据
 const fetchData = async (page = pagination.value.page) => {
   try {

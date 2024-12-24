@@ -100,7 +100,7 @@ const closeDialog = () => {
 
 // 确认按钮点击处理
 const handleConfirm = async () => {
-  await updateOrder(form.value.id, form.value);
+  await updateOrder(form.value.orderId, form.value);
   closeDialog();
 };
 

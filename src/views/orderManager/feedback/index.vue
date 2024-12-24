@@ -71,7 +71,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from "vue";
+import { ref, onMounted } from "vue";
 import Filter from "./components/filter.vue";
 import dayjs from "dayjs"; // 导入 dayjs 库
 import { getFeedbackPaginated } from "@/api/order";
@@ -133,6 +133,10 @@ const handleFilter = (filterParams: any) => {
 const formatDate = (date: string) => {
   return dayjs(date).format("YYYY-MM-DD HH:mm:ss");
 };
+
+onMounted(() => {
+  fetchData();
+});
 </script>
 
 <style scoped>
