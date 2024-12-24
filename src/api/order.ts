@@ -5,7 +5,7 @@ interface OrderData {
   orderId?: string;
   userId?: string;
   movieName?: string;
-  seats?: string;
+  seat?: number;
   status?: string;
   price?: number;
   orderTime?: string;
@@ -53,14 +53,6 @@ export async function updateOrder(id: string, data: OrderData) {
     url: `/api/orders/${id}`,
     method: "put",
     data,
-  });
-}
-
-/** 获取订单详情 */
-export async function getOrderDetails(id: string) {
-  return await service({
-    url: `/api/orders/${id}`,
-    method: "get",
   });
 }
 

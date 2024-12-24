@@ -109,6 +109,7 @@ const closeDialog = () => {
 // 确认按钮点击处理
 const handleConfirm = async () => {
   const cinemaData: CinemaData = { ...form.value }; // 确保类型一致
+  closeDialog();
   await updateCinema(cinemaData.id, cinemaData);
 };
 

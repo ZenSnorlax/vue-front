@@ -54,7 +54,7 @@
 
     <!-- 下单时间筛选（日期范围选择框） -->
     <el-date-picker
-      v-model="filters.orderTime"
+      v-model="range"
       type="daterange"
       range-separator="至"
       start-placeholder="开始时间"
@@ -72,17 +72,21 @@ import dayjs from "dayjs";
 // 定义 emit，用于向父组件传递事件
 const emit = defineEmits(["filterCon"]);
 
-// 定义筛选条件，状态默认为 "全选"
+// 定义筛选条件
 const filters = ref({
   movieName: "",
   cinemaName: "",
   userId: "",
   orderId: "",
-  status: "", // 初始为空字符串表示没有选择任何状态
-  orderTime: [] as string[], // 类型为字符串数组
+  status: "", // 初始为空字符串表示未选择状态
+  startTime: "",
+  endTime: "",
 });
 
-// 各个筛选项的选择项（已删除 "全选"）
+// 日期范围绑定变量
+const range = ref<[Date | null, Date | null]>([null, null]);
+
+// 各个筛选项的选项
 const statusOptions = ref([
   "已支付",
   "未支付",
@@ -94,16 +98,16 @@ const statusOptions = ref([
 
 // 筛选变化时触发
 const applyFilter = () => {
-  const [start, end] = filters.value.orderTime;
-
-  // 如果存在日期范围，则格式化为字符串
-  filters.value.orderTime =
-    start && end
-      ? [
-          dayjs(start).format("YYYY-MM-DD HH:mm:ss"),
-          dayjs(end).format("YYYY-MM-DD HH:mm:ss"),
-        ]
-      : [];
+  // 如果选择了日期范围，格式化为字符串
+  if (range.value[0] && range.value[1]) {
+    filters.value.startTime = dayjs(range.value[0]).format(
+      "YYYY-MM-DD HH:mm:ss"
+    );
+    filters.value.endTime = dayjs(range.value[1]).format("YYYY-MM-DD HH:mm:ss");
+  } else {
+    filters.value.startTime = "";
+    filters.value.endTime = "";
+  }
 
   // 触发父组件的筛选事件，传递当前筛选条件
   emit("filterCon", filters.value);

@@ -164,13 +164,7 @@ const fetchPaginatedData = async () => {
     const response = await getUsersPaginated({
       pageSize: pageSize.value,
       page: currentPage.value,
-      userName: filters.value.userName,
-      userId: filters.value.userId,
-      userEmail: filters.value.userEmail,
-      userPhone: filters.value.userPhone,
-      status: filters.value.status,
-      startTime: filters.value.range[0],
-      endTime: filters.value.range[1],
+      ...filters.value,
     });
 
     const { total, data } = response.data.contents;

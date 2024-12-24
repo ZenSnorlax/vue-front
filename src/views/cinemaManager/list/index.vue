@@ -3,7 +3,7 @@ import { ref, onMounted } from "vue";
 import { Plus } from "@element-plus/icons-vue"; // 图标
 import EditDialog from "./components/editDialog.vue";
 import AddDialog from "./components/addDialog.vue";
-import { getCinemas } from "@/api/cinema";
+import { getCinemas, deleteCinema } from "@/api/cinema";
 
 // 控制 Dialog 的显示与隐藏
 const isEditDialogVisible = ref(false);
@@ -35,10 +35,11 @@ const handleUpdata = (row: any) => {
 };
 
 // 点击删除的处理函数
-const handleDelete = (id: string) => {
+const handleDelete = async (id: string) => {
   const index = tableData.value.findIndex((item) => item.id === id);
   if (index !== -1) {
     tableData.value.splice(index, 1); // 删除影厅信息
+    await deleteCinema(id);
     console.log(`影厅 ${id} 已删除`);
   }
 };

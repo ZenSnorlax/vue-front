@@ -35,6 +35,7 @@
       style="width: 240px"
       @input="applyFilter"
     />
+
     <!-- 用户状态筛选（选择框） -->
     <el-select
       v-model="filters.status"
@@ -53,7 +54,7 @@
 
     <!-- 注册时间筛选（日期范围选择框） -->
     <el-date-picker
-      v-model="filters.range"
+      v-model="range"
       type="daterange"
       range-separator="至"
       start-placeholder="开始时间"
@@ -70,36 +71,40 @@ import dayjs from "dayjs";
 
 // 定义 emit，用于向父组件传递事件
 const emit = defineEmits<{
-  (e: "filter-con", filters: any): void; // 定义触发事件的类型
+  (e: "filter-con", filters: any): void;
 }>();
 
-// 定义筛选条件，状态默认为 "全选"
+// 定义日期范围
+const range = ref<[Date | null, Date | null]>([null, null]);
+
+// 定义筛选条件
 const filters = ref({
   userName: "",
   userId: "",
   userEmail: "",
-  status: "",
-  range: [] as string[], // 类型为字符串数组
   userPhone: "",
+  status: "",
+  startTime: "",
+  endTime: "",
 });
 
-// 各个筛选项的选择项（已删除 "全选"）
+// 用户状态选项
 const statusOptions = ref(["活跃", "禁用"]);
 
 // 筛选变化时触发
 const applyFilter = () => {
-  const [start, end] = filters.value.range;
+  // 判断是否选择了日期范围
+  if (range.value[0] && range.value[1]) {
+    filters.value.startTime = dayjs(range.value[0]).format(
+      "YYYY-MM-DD HH:mm:ss"
+    );
+    filters.value.endTime = dayjs(range.value[1]).format("YYYY-MM-DD HH:mm:ss");
+  } else {
+    filters.value.startTime = "";
+    filters.value.endTime = "";
+  }
 
-  // 如果存在日期范围，则格式化为字符串
-  filters.value.range =
-    start && end
-      ? [
-          dayjs(start).format("YYYY-MM-DD HH:mm:ss"),
-          dayjs(end).format("YYYY-MM-DD HH:mm:ss"),
-        ]
-      : [];
-
-  // 触发父组件的筛选事件，传递当前筛选条件
+  // 触发父组件事件，传递筛选条件
   emit("filter-con", filters.value);
 };
 </script>
