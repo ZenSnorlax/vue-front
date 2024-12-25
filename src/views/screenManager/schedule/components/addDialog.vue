@@ -51,6 +51,7 @@
 <script setup lang="ts">
 import { defineProps, defineEmits, ref, watch } from "vue";
 import { createScreen, ScreenData } from "@/api/screen";
+import { ElMessage } from "element-plus";
 
 // 表单数据和验证规则
 const form = ref<ScreenData>({
@@ -87,9 +88,13 @@ const closeDialog = () => {
 // 提交表单
 const handleConfirm = async () => {
   // 调用接口提交数据
-  await createScreen(form.value);
-  console.log("提交成功：", form.value);
-  closeDialog();
+  const reponse = await createScreen(form.value);
+  if (reponse.data.code == 1) {
+    ElMessage("添加成功");
+    closeDialog();
+  } else if (reponse.data.code == 0) {
+    ElMessage(reponse.data.message);
+  }
 };
 
 // 同步 dialogVisible 到父组件

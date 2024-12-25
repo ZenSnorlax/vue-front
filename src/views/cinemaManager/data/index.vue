@@ -10,7 +10,7 @@
 <script setup lang="ts">
 import * as echarts from "echarts";
 import { ref, onMounted } from "vue";
-import { getCinemaIncome } from "@/api/cinema"; //导入影厅名称与收入的字典api
+
 // 定义 ref 来存储图表 DOM 元素
 const chartRef1 = ref(null);
 type EChartsOption = echarts.EChartsOption;

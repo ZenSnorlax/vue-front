@@ -1,14 +1,5 @@
 <template>
   <div class="flex flex-wrap gap-4 items-center">
-    <!-- 放映编号筛选（文本框） -->
-    <el-input
-      v-model="filters.scheduleId"
-      placeholder="请输入放映编号"
-      size="small"
-      style="width: 240px"
-      @input="applyFilter"
-    />
-
     <!-- 电影名称筛选（文本框） -->
     <el-input
       v-model="filters.movieName"

@@ -2,12 +2,12 @@
   <div id="schedule-list">
     <!-- 筛选和添加放映计划 -->
     <div class="toolbar">
-      <Filter @filter-con="filterData"></Filter>
+      <Filter @filter-con="handleFilter"></Filter>
       <el-button type="primary" :icon="Plus" circle @click="handleAdd" />
     </div>
 
     <!-- 放映计划数据表格 -->
-    <el-table :data="paginatedData" style="width: 100%" border>
+    <el-table :data="tableData" style="width: 100%" border>
       <!-- 电影名称 -->
       <el-table-column
         prop="movieName"
@@ -67,7 +67,7 @@
             <el-link
               type="danger"
               size="small"
-              @click="handleDelete(row.scheduleId)"
+              @click="handleDelete(row.cinemaName, row.startTime)"
               >删除</el-link
             >
           </div>
@@ -78,9 +78,9 @@
     <!-- 分页 -->
     <div class="pagination-container">
       <el-pagination
-        v-model:current-page="currentPage"
-        :page-size="pageSize"
-        :total="filteredData.length"
+        v-model:current-page="pagination.page"
+        :page-size="pagination.pageSize"
+        :total="pagination.total"
         layout="prev, pager, next"
         @current-change="handlePageChange"
       />
@@ -102,68 +102,46 @@
 </template>
 
 <script setup lang="ts">
-import { ref, computed } from "vue";
+import { ref } from "vue";
 import { Plus } from "@element-plus/icons-vue"; // 图标
 import EditDialog from "./components/editDialog.vue";
 import AddDialog from "./components/addDialog.vue";
-import { schedule_data } from "@/test/schedule"; // 示例数据
 import Filter from "./components/filter.vue";
 import dayjs from "dayjs"; // 导入 dayjs 库
 import isBetween from "dayjs/plugin/isBetween";
+import { deleteScreen, getScreensPaginated } from "@/api/screen";
 // 注册插件
 dayjs.extend(isBetween);
+
+// 定义表格数据类型
+interface Order {
+  orderId: string;
+  userId: string;
+  cinemaName: string;
+  movieName: string;
+  status: string;
+  orderTime: string;
+}
+
+// 表格数据
+const tableData = ref<Order[]>([]);
+
+// 分页数据
+const pagination = ref({
+  page: 1,
+  pageSize: 10,
+  total: 0,
+});
+
+// 筛选条件
+const filters = ref();
+
 // 控制 Drawer 和 Dialog 的显示与隐藏
 const isEditDialogVisible = ref(false);
 const isAddDialogVisible = ref(false);
 const selectedRow = ref<Record<string, any> | undefined>(undefined);
 
 // 放映计划数据
-const tableData = ref(schedule_data);
-const filteredData = ref([...tableData.value]);
-
-// 筛选逻辑
-const filterData = (filters: any) => {
-  const { scheduleId, movieName, cinemaName, status, screeningTime } = filters;
-
-  filteredData.value = tableData.value.filter((item) => {
-    const isShowTimeInRange = () => {
-      // 确保 screeningTime 是一个包含两个时间的数组
-      const [startTime, endTime] = screeningTime || [];
-
-      // 如果没有选择时间范围，则跳过时间筛选
-      if (!startTime || !endTime) return true;
-
-      // 将 item 的开始时间和结束时间转换为 dayjs 对象
-      const itemStartTime = dayjs(item.startTime); // item.startTime 转换为 dayjs 对象
-      const itemEndTime = dayjs(item.endTime); // item.endTime 转换为 dayjs 对象
-
-      // 如果 itemStartTime 或 itemEndTime 不是有效的 dayjs 对象，返回 false
-      if (!itemStartTime.isValid() || !itemEndTime.isValid()) {
-        return false;
-      }
-
-      // 将筛选范围的开始和结束时间转换为 dayjs 对象
-      const filterStartTime = dayjs(startTime);
-      const filterEndTime = dayjs(endTime);
-
-      // 检查 item 的开始时间是否在筛选范围内
-      return itemStartTime.isBetween(
-        filterStartTime,
-        filterEndTime,
-        null,
-        "[]"
-      );
-    };
-
-    return (
-      (scheduleId ? item.scheduleId.includes(scheduleId) : true) &&
-      (movieName ? item.movieName.includes(movieName) : true) &&
-      (cinemaName ? item.cinemaName.includes(cinemaName) : true) &&
-      (status ? item.status === status : true) &&
-      isShowTimeInRange() // 应用时间筛选
-    );
-  });
-};
 
 // 格式化时间
 const formatDate = (date: string) => {
@@ -184,16 +162,33 @@ const getStatusType = (status: string) => {
   }
 };
 
-// 分页逻辑
-const currentPage = ref(1);
-const pageSize = ref(10);
+/// 获取数据
+const fetchData = async (page = pagination.value.page) => {
+  try {
+    const response = await getScreensPaginated({
+      pageSize: pagination.value.pageSize,
+      page,
+      ...filters.value,
+    });
 
-// 计算当前页的数据
-const paginatedData = computed(() => {
-  const start = (currentPage.value - 1) * pageSize.value;
-  const end = start + pageSize.value;
-  return filteredData.value.slice(start, end);
-});
+    const { total, data } = response.data.contents;
+    pagination.value.total = total;
+    tableData.value = data;
+  } catch (error) {
+    console.error("获取分页数据失败:", error);
+  }
+};
+
+// 分页操作
+const handlePageChange = (page: number) => {
+  pagination.value.page = page;
+  fetchData();
+};
+// 筛选操作
+const handleFilter = (filterParams: any) => {
+  filters.value = filterParams;
+  fetchData(1); // 筛选后重置页码为1
+};
 
 // 编辑操作
 const handleEdit = (row: any) => {
@@ -202,33 +197,14 @@ const handleEdit = (row: any) => {
 };
 
 // 删除操作
-const handleDelete = (scheduleId: string) => {
-  const index = tableData.value.findIndex(
-    (item) => item.scheduleId === scheduleId
-  );
-  if (index !== -1) {
-    tableData.value.splice(index, 1);
-    console.log(`放映计划 ${scheduleId} 已删除`);
-    filterData({
-      scheduleId: "",
-      movieName: "",
-      auditorium: "",
-      status: "",
-      startTime: "",
-      endTime: "",
-    });
-  }
+const handleDelete = async (name: string, time: string) => {
+  await deleteScreen(name, time);
 };
 
 // 添加操作
 const handleAdd = () => {
   isAddDialogVisible.value = true;
   selectedRow.value = undefined;
-};
-
-// 分页页码切换
-const handlePageChange = (page: number) => {
-  currentPage.value = page;
 };
 </script>
 

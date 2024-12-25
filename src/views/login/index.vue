@@ -39,14 +39,6 @@ const errorMessage = ref(""); // 用于存储错误消息
 const router = useRouter(); // 获取路由实例
 
 const handleSubmit = async () => {
-  // 清空上一次的错误消息
-  errorMessage.value = "";
-  if (username.value == "admin" && password.value == "123456") {
-    localStorage.setItem("token", "1");
-    router.push("/");
-  }
-
-  /**
   const response = await login({
     username: username.value,
     password: password.value,
@@ -60,7 +52,6 @@ const handleSubmit = async () => {
 
     router.push("/");
   }
-    */
 };
 </script>
 
