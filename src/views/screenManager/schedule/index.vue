@@ -64,10 +64,7 @@
             <el-link type="success" size="small" @click="handleEdit(row)">
               编辑
             </el-link>
-            <el-link
-              type="danger"
-              size="small"
-              @click="handleDelete(row.cinemaName, row.startTime)"
+            <el-link type="danger" size="small" @click="handleDelete(row.id)"
               >删除</el-link
             >
           </div>
@@ -102,7 +99,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref } from "vue";
+import { onMounted, ref } from "vue";
 import { Plus } from "@element-plus/icons-vue"; // 图标
 import EditDialog from "./components/editDialog.vue";
 import AddDialog from "./components/addDialog.vue";
@@ -197,8 +194,8 @@ const handleEdit = (row: any) => {
 };
 
 // 删除操作
-const handleDelete = async (name: string, time: string) => {
-  await deleteScreen(name, time);
+const handleDelete = async (id: string) => {
+  await deleteScreen(id);
 };
 
 // 添加操作
@@ -206,6 +203,9 @@ const handleAdd = () => {
   isAddDialogVisible.value = true;
   selectedRow.value = undefined;
 };
+onMounted(() => {
+  fetchData();
+});
 </script>
 
 <style scoped>

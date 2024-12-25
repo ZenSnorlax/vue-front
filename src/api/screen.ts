@@ -1,6 +1,7 @@
 import service from "@/utils/request";
 
 export interface ScreenData {
+  id?: string;
   movieName?: string;
   startTime?: string;
   endTime?: string;
@@ -40,21 +41,20 @@ export async function createScreen(data: ScreenData) {
   });
 }
 
-export async function updateScreen(data: ScreenData) {
+export async function updateScreen(id: string, data: ScreenData) {
   return service({
-    url: "/api/screens/",
+    url: `/api/screens/${id}`,
     method: "put",
     data,
   });
 }
 
-export async function deleteScreen(cinema: string, startTime: string) {
+export async function deleteScreen(id: string) {
   return service({
     url: `/api/screens/`,
     method: "delete",
     data: {
-      cinema: cinema,
-      startTime: startTime,
+      id,
     },
   });
 }

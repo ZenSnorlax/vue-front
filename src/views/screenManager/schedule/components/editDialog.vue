@@ -86,7 +86,7 @@ const closeDialog = () => {
 
 // 确认按钮点击处理
 const handleConfirm = async () => {
-  const reponse = await updateScreen(form.value);
+  const reponse = await updateScreen(form.value.id, form.value);
   if (reponse.data.code == 1) {
     ElMessage("修改成功");
     closeDialog;
