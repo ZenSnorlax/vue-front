@@ -51,10 +51,7 @@ export async function updateScreen(id: string, data: ScreenData) {
 
 export async function deleteScreen(id: string) {
   return service({
-    url: `/api/screens/`,
+    url: `/api/screens/${id}`,
     method: "delete",
-    data: {
-      id,
-    },
   });
 }

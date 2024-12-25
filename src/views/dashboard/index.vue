@@ -17,71 +17,65 @@
 <script setup lang="ts">
 import * as echarts from "echarts";
 import { ref, onMounted } from "vue";
+import { getRevenue, RevenueParams } from "@/api/dashboard";
 
 const chartRef = ref(null); // 图表 DOM 元素
 let myChart: echarts.ECharts | null = null; // 图表实例
 
-type EChartsOption = echarts.EChartsOption; // 类型定义
-1; // 模拟的数据
-const mockData = {
-  yearly: {
-    labels: ["2020", "2021", "2022", "2023"],
-    data: [100000, 120000, 110000, 130000],
-  },
-  monthly: {
-    labels: ["Jan", "Feb", "Mar", "Apr", "May", "Jun"],
-    data: [8200, 9320, 9010, 9340, 12940, 13300],
-  },
-  weekly: {
-    labels: ["Week 1", "Week 2", "Week 3", "Week 4"],
-    data: [2000, 2500, 2200, 2800],
-  },
-};
+type EChartsOption = echarts.EChartsOption; // 图表配置类型
 
 // 获取数据并更新图表
-const fetchData = (timeframe: "yearly" | "monthly" | "weekly") => {
-  const { labels, data } = mockData[timeframe];
+const fetchData = async (timeframe: "yearly" | "monthly" | "weekly") => {
+  try {
+    // 调用接口获取数据
+    const params: RevenueParams = { timeframe };
+    const response = await getRevenue(params);
 
-  if (myChart) {
-    // 更新图表配置
-    const option: EChartsOption = {
-      xAxis: {
-        type: "category",
-        boundaryGap: false,
-        data: labels,
-      },
-      yAxis: {
-        type: "value",
-        axisLabel: {
-          formatter: "{value}元",
+    const { labels, data } = response.data;
+
+    if (myChart) {
+      // 更新图表配置
+      const option: EChartsOption = {
+        xAxis: {
+          type: "category",
+          boundaryGap: false,
+          data: labels,
         },
-      },
-      series: [
-        {
-          name: "Revenue",
-          type: "line",
-          smooth: true,
-          data,
-          areaStyle: {
-            color: "rgba(128, 128, 255, 0.3)",
-          },
-          lineStyle: {
-            color: "#5470C6",
-            width: 2,
-          },
-          symbol: "circle",
-          symbolSize: 8,
-          itemStyle: {
-            color: "#5470C6",
-            borderColor: "#fff",
-            borderWidth: 2,
+        yAxis: {
+          type: "value",
+          axisLabel: {
+            formatter: "{value}元",
           },
         },
-      ],
-    };
+        series: [
+          {
+            name: "Revenue",
+            type: "line",
+            smooth: true,
+            data,
+            areaStyle: {
+              color: "rgba(128, 128, 255, 0.3)",
+            },
+            lineStyle: {
+              color: "#5470C6",
+              width: 2,
+            },
+            symbol: "circle",
+            symbolSize: 8,
+            itemStyle: {
+              color: "#5470C6",
+              borderColor: "#fff",
+              borderWidth: 2,
+            },
+          },
+        ],
+      };
 
-    // 设置新选项
-    myChart.setOption(option);
+      // 设置新选项
+      myChart.setOption(option);
+    }
+  } catch (error) {
+    console.error("数据加载失败:", error);
   }
 };
 
