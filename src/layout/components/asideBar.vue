@@ -51,6 +51,9 @@
             <el-menu-item index="/screen_manager/schedule"
               >放映排期</el-menu-item
             >
+            <el-menu-item index="/screen_manager/data"
+              >近期电影评分</el-menu-item
+            >
           </el-sub-menu>
         </el-menu>
       </el-col>

@@ -32,7 +32,7 @@ type EChartsOption = echarts.EChartsOption;
 const fetchIncomeData = async (selectedYear: number) => {
   try {
     const response = await getCinemaRevenue({ year: selectedYear });
-    const { years, revenues } = response.data;
+    const { names, revenues } = response.data;
 
     const incomeChartOption: EChartsOption = {
       title: {
@@ -59,7 +59,7 @@ const fetchIncomeData = async (selectedYear: number) => {
       xAxis: [
         {
           type: "category",
-          data: years,
+          data: names,
           axisTick: {
             alignWithLabel: true,
           },

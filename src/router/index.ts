@@ -121,6 +121,14 @@ const routes: Array<RouteRecordRaw> = [
               title: "放映排期",
             },
           },
+          {
+            path: "data",
+            component: () => import("@/views/screenManager/data/index.vue"),
+            name: "recentMovieRate", // 修正名称
+            meta: {
+              title: "近期电影评分",
+            },
+          },
         ],
       },
     ],

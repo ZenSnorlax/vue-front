@@ -5,7 +5,7 @@ export interface RevenueParams {
 }
 
 export async function getRevenue(params: RevenueParams) {
-  return service({
+  return await service({
     url: "/api/revenue",
     method: "get",
     params,
