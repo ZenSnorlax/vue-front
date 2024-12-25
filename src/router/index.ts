@@ -105,9 +105,9 @@ const routes: Array<RouteRecordRaw> = [
         ],
       },
       {
-        path: "movie_manager",
-        redirect: "/movie_manager/schedule", // 默认重定向到子路由
-        name: "MovieManager",
+        path: "screen_manager",
+        redirect: "/screen_manager/schedule", // 默认重定向到子路由
+        name: "ScreenManager",
         meta: {
           title: "放映管理",
           requiresAuth: true,
@@ -115,8 +115,8 @@ const routes: Array<RouteRecordRaw> = [
         children: [
           {
             path: "schedule",
-            component: () => import("@/views/movieManager/schedule/index.vue"),
-            name: "MovieSchedule", // 修正名称
+            component: () => import("@/views/screenManager/schedule/index.vue"),
+            name: "ScreenSchedule", // 修正名称
             meta: {
               title: "放映排期",
             },

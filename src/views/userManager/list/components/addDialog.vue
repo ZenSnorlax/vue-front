@@ -1,5 +1,5 @@
 <template>
-  <el-dialog v-model="dialogVisible" title="增加用户" width="500px">
+  <el-dialog v-model="dialogVisible" title="增加放映" width="500px">
     <el-form :model="form" label-width="100px" ref="formRef">
       <!-- 用户名称 -->
       <el-form-item label="用户名称" prop="userName">

@@ -1,18 +1,18 @@
 <template>
   <el-dialog v-model="dialogVisible" title="编辑放映信息" width="500px">
     <el-form :model="form" label-width="100px">
-      <!-- 用户名称 -->
-      <el-form-item label="电影名称">
+      <!-- 电影名称 -->
+      <el-form-item label="电影名称" prop="movieName">
         <el-input v-model="form.movieName" placeholder="请输入电影名称" />
       </el-form-item>
 
-      <!-- 影厅名称  -->
-      <el-form-item label="影厅名称">
+      <!-- 影厅名称 -->
+      <el-form-item label="影厅名称" prop="cinemaName">
         <el-input v-model="form.cinemaName" placeholder="请输入影厅名称" />
       </el-form-item>
 
       <!-- 开始时间 -->
-      <el-form-item label="开始时间">
+      <el-form-item label="开始时间" prop="startTime">
         <el-date-picker
           v-model="form.startTime"
           type="datetime"
@@ -21,7 +21,7 @@
       </el-form-item>
 
       <!-- 结束时间 -->
-      <el-form-item label="结束时间">
+      <el-form-item label="结束时间" prop="endTime">
         <el-date-picker
           v-model="form.endTime"
           type="datetime"
@@ -42,7 +42,9 @@
 
 <script setup lang="ts">
 import { defineProps, defineEmits, ref, watch } from "vue";
-// 导入更新订单数据的API（例如，updateOrder）
+import { ElMessage } from "element-plus";
+// 假设 updateSchedule 是更新放映数据的 API
+import { updateScreen } from "@/api/screen";
 
 // 定义父组件传递的属性
 const props = defineProps({
@@ -54,11 +56,11 @@ const props = defineProps({
 });
 
 // 定义父组件传递的事件
-const emit = defineEmits(["update:dialogVisible"]);
+const emit = defineEmits(["update:dialogVisible", "refresh"]);
 
 // 控制对话框显示
 const dialogVisible = ref(props.dialogVisible);
-const form = ref({ ...props.row }); // 使用展开操作符来确保表单数据是深拷贝的
+const form = ref({ ...props.row }); // 确保表单数据是深拷贝的
 
 // 监听 props.dialogVisible 的变化，确保同步
 watch(
@@ -79,12 +81,13 @@ watch(
 // 关闭对话框
 const closeDialog = () => {
   dialogVisible.value = false;
-  emit("update:dialogVisible", false); // 发出事件通知父组件关闭对话框
+  emit("update:dialogVisible", false); // 通知父组件关闭对话框
 };
 
 // 确认按钮点击处理
-const handleConfirm = () => {
-  closeDialog();
+const handleConfirm = async () => {
+  await updateScreen(form.value);
+  ElMessage.success("放映信息更新成功");
 };
 
 // 监听 dialogVisible 的变化并通知父组件

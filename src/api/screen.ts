@@ -1,16 +1,16 @@
 import service from "@/utils/request";
 
-interface ScreenData {
+export interface ScreenData {
   movieName?: string;
   startTime?: string;
   endTime?: string;
   status?: string;
-  cinemaTime?: string;
+  cinemaName?: string;
 }
 
 interface PaginationParams {
-  page: number; // 当前页码
-  pageSize: number; // 每页条数
+  page: number;
+  pageSize: number;
 }
 
 interface TimeRange {
@@ -22,7 +22,7 @@ interface FilterParams extends Partial<ScreenData & TimeRange> {
   [key: string]: any;
 }
 
-export async function getUsersPaginated(
+export async function getScreensPaginated(
   params: PaginationParams & FilterParams
 ) {
   return service({
@@ -32,7 +32,7 @@ export async function getUsersPaginated(
   });
 }
 
-export async function createUser(data: ScreenData) {
+export async function createScreen(data: ScreenData) {
   return service({
     url: "/api/screens",
     method: "post",
@@ -40,17 +40,21 @@ export async function createUser(data: ScreenData) {
   });
 }
 
-export async function updateUser(id: string, data: ScreenData) {
+export async function updateScreen(data: ScreenData) {
   return service({
-    url: `/api/screens/${id}`,
+    url: "/api/screens/",
     method: "put",
     data,
   });
 }
 
-export async function deleteUser(id: string) {
+export async function deleteScreen(cinema: string, startTime: string) {
   return service({
-    url: `/api/screens/${id}`,
+    url: `/api/screens/`,
     method: "delete",
+    data: {
+      cinema: cinema,
+      startTime: startTime,
+    },
   });
 }
