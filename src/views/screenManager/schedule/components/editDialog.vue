@@ -86,8 +86,13 @@ const closeDialog = () => {
 
 // 确认按钮点击处理
 const handleConfirm = async () => {
-  await updateScreen(form.value);
-  ElMessage.success("放映信息更新成功");
+  const reponse = await updateScreen(form.value);
+  if (reponse.data.code == 1) {
+    ElMessage("修改成功");
+    closeDialog;
+  } else if (reponse.data.code == 0) {
+    ElMessage(reponse.data.message);
+  }
 };
 
 // 监听 dialogVisible 的变化并通知父组件
