@@ -4,7 +4,7 @@
     <el-button-group>
       <el-button @click="fetchData('yearly')">按年</el-button>
       <el-button @click="fetchData('monthly')">按月</el-button>
-      <el-button @click="fetchData('weekly')">按周</el-button>
+      <el-button @click="fetchData('dayly')">按日</el-button>
     </el-button-group>
 
     <!-- 图表容器 -->
@@ -25,7 +25,7 @@ let myChart: echarts.ECharts | null = null; // 图表实例
 type EChartsOption = echarts.EChartsOption; // 图表配置类型
 
 // 获取数据并更新图表
-const fetchData = async (timeframe: "yearly" | "monthly" | "weekly") => {
+const fetchData = async (timeframe: "yearly" | "monthly" | "dayly") => {
   try {
     // 调用接口获取数据
     const params: RevenueParams = { timeframe };
@@ -93,7 +93,13 @@ onMounted(() => {
 </script>
 
 <style scoped>
+#dashboard {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
 .el-button-group {
+  padding-top: 20px;
   display: flex;
   justify-content: center;
   margin-bottom: 20px;

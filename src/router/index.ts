@@ -60,7 +60,7 @@ const routes: Array<RouteRecordRaw> = [
             component: () => import("@/views/cinemaManager/data/index.vue"),
             name: "CinemaData",
             meta: {
-              title: "运营数据",
+              title: "影厅收入",
             },
           },
         ],

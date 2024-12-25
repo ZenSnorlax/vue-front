@@ -17,14 +17,6 @@ export async function getCinemas() {
   });
 }
 
-/** 获取影厅收入 */
-export async function getCinemaIncome() {
-  return await service({
-    url: "/api/cinemas/income",
-    method: "get",
-  });
-}
-
 /** 删除影厅 */
 export async function deleteCinema(id: string) {
   return await service({
@@ -48,5 +40,16 @@ export async function updateCinema(id: string, data: CinemaData) {
     url: `/api/cinemas/${id}`,
     method: "put",
     data,
+  });
+}
+interface CinemaRevenueParams {
+  year?: number | null; // 可选年份参数
+}
+
+export async function getCinemaRevenue(params: CinemaRevenueParams) {
+  return await service({
+    url: "/api/cinemas/revenue",
+    method: "get",
+    params,
   });
 }

@@ -22,7 +22,7 @@
               <span>影厅管理</span>
             </template>
             <el-menu-item index="/cinema_manager/list">影厅列表</el-menu-item>
-            <el-menu-item index="/cinema_manager/data">运营数据</el-menu-item>
+            <el-menu-item index="/cinema_manager/data">影厅收入</el-menu-item>
           </el-sub-menu>
 
           <el-sub-menu index="/order_manager">
