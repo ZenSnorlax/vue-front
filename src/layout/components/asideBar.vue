@@ -42,6 +42,7 @@
               <span>用户管理</span>
             </template>
             <el-menu-item index="/user_manager/list">用户列表</el-menu-item>
+            <el-menu-item index="/user_manager/data">用户增量</el-menu-item>
           </el-sub-menu>
           <el-sub-menu index="/screen_manager">
             <template #title>

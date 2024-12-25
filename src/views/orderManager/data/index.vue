@@ -8,211 +8,133 @@
     <el-card class="chart-card">
       <div class="chart" ref="chartRef2"></div>
     </el-card>
-    <!-- 订单反馈电影均分统计 -->
-    <el-card class="chart-card">
-      <div class="chart" ref="chartRef3"></div>
-    </el-card>
   </div>
 </template>
 
 <script setup lang="ts">
 import * as echarts from "echarts";
 import { ref, onMounted } from "vue";
-import { order_data, feedback_data } from "@/test/order";
+import { getOrdersStatus, getOrdersCount } from "@/api/order"; // 导入接口方法
 
 const chartRef1 = ref(null);
 const chartRef2 = ref(null);
-const chartRef3 = ref(null);
 
 type EChartsOption = echarts.EChartsOption;
 
-// 统计订单状态（已支付/未支付/已确认/已观看/已取消/已退款）
-const orderStatusStats = order_data.reduce(
-  (acc, order) => {
-    if (order.status === "已支付") acc.paid++;
-    if (order.status === "未支付") acc.unpaid++;
-    if (order.status === "已确认") acc.confirmed++;
-    if (order.status === "已观看") acc.watched++;
-    if (order.status === "已取消") acc.cancelled++;
-    if (order.status === "已退款") acc.refunded++;
-    return acc;
-  },
-  { paid: 0, unpaid: 0, confirmed: 0, watched: 0, cancelled: 0, refunded: 0 }
-);
+// 渲染订单状态分布图表
+const renderOrderStatusChart = async () => {
+  try {
+    const response = await getOrdersStatus(); // 获取订单状态数据
+    const statusData = response.data; // 假设返回 [{ name: "已支付", value: 20 }, ...]
 
-// 订单日期分布统计
-const dailyStats = order_data.reduce(
-  (acc: { [key: string]: number }, order) => {
-    const date = new Date(order.orderTime).toISOString().split("T")[0]; // 获取日期部分（YYYY-MM-DD）
-    acc[date] = (acc[date] || 0) + 1; // 累加该日期的订单数量
-    return acc;
-  },
-  {} as { [key: string]: number }
-);
+    const orderStatusOption: EChartsOption = {
+      title: {
+        text: "订单状态分布",
+        left: "center",
+      },
+      tooltip: {
+        trigger: "item",
+      },
+      legend: {
+        bottom: "0%",
+      },
+      series: [
+        {
+          name: "订单状态",
+          type: "pie",
+          radius: "50%",
+          data: statusData,
+          emphasis: {
+            itemStyle: {
+              shadowBlur: 10,
+              shadowOffsetX: 0,
+              shadowColor: "rgba(0, 0, 0, 0.5)",
+            },
+          },
+        },
+      ],
+    };
 
-const sortedDates = Object.keys(dailyStats).sort(); // 获取并排序日期
-const dailyData = sortedDates.map((date) => dailyStats[date]); // 按排序后的日期获取订单数量
-
-// 电影评分均分统计
-const avgRating = feedback_data.reduce(
-  (
-    acc: { [key: string]: { totalRating: number; count: number } },
-    feedback
-  ) => {
-    if (!acc[feedback.movieName]) {
-      acc[feedback.movieName] = { totalRating: 0, count: 0 };
+    if (chartRef1.value) {
+      const chartInstance = echarts.init(chartRef1.value, null, {
+        renderer: "svg",
+      });
+      chartInstance.setOption(orderStatusOption);
     }
-    acc[feedback.movieName].totalRating += feedback.rating;
-    acc[feedback.movieName].count += 1;
-    return acc;
-  },
-  {} as { [key: string]: { totalRating: number; count: number } }
-);
-
-// 初始化图表
-const createChart = (chartRef: any, option: EChartsOption) => {
-  if (chartRef.value) {
-    const chartInstance = echarts.init(chartRef.value, null, {
-      renderer: "svg",
-    });
-    chartInstance.setOption(option);
+  } catch (error) {
+    console.error("获取订单状态分布数据失败:", error);
   }
 };
 
-onMounted(() => {
-  // 订单状态图表配置
-  const orderStatusOption: EChartsOption = {
-    title: {
-      text: "订单状态分布",
-      left: "center",
-    },
-    tooltip: {
-      trigger: "item",
-    },
-    legend: {
-      bottom: "0%",
-    },
-    series: [
-      {
-        name: "订单状态",
-        type: "pie",
-        radius: "50%",
-        data: [
-          { value: orderStatusStats.paid, name: "已支付" },
-          { value: orderStatusStats.unpaid, name: "未支付" },
-          { value: orderStatusStats.confirmed, name: "已确认" },
-          { value: orderStatusStats.watched, name: "已观看" },
-          { value: orderStatusStats.cancelled, name: "已取消" },
-          { value: orderStatusStats.refunded, name: "已退款" },
-        ],
-        emphasis: {
-          itemStyle: {
-            shadowBlur: 10,
-            shadowOffsetX: 0,
-            shadowColor: "rgba(0, 0, 0, 0.5)",
+// 渲染订单日期分布图表
+const renderOrderDateChart = async () => {
+  try {
+    const response = await getOrdersCount(); // 获取订单日期分布数据
+    const { dates, counts } = response.data; // 假设返回 { dates: ["2023-01-01", ...], counts: [10, ...] }
+
+    const dailyOption: EChartsOption = {
+      title: {
+        text: "订单日期分布",
+        left: "center",
+      },
+      tooltip: {
+        trigger: "axis",
+        axisPointer: {
+          type: "shadow",
+        },
+      },
+      grid: {
+        left: "3%",
+        right: "4%",
+        bottom: "3%",
+        containLabel: true,
+      },
+      xAxis: [
+        {
+          type: "category",
+          data: dates,
+          axisTick: {
+            alignWithLabel: true,
+          },
+          axisLabel: {
+            interval: 0,
+            rotate: 45,
           },
         },
-      },
-    ],
-  };
+      ],
+      yAxis: [
+        {
+          type: "value",
+        },
+      ],
+      series: [
+        {
+          name: "订单数量",
+          type: "bar",
+          barWidth: "60%",
+          data: counts,
+          itemStyle: {
+            color: "#409EFF",
+          },
+        },
+      ],
+    };
 
-  // 订单日期分布图表配置
-  const dailyOption: EChartsOption = {
-    title: {
-      text: "订单日期分布",
-      left: "center",
-    },
-    tooltip: {
-      trigger: "axis",
-      axisPointer: {
-        type: "shadow",
-      },
-    },
-    grid: {
-      left: "3%",
-      right: "4%",
-      bottom: "3%",
-      containLabel: true,
-    },
-    xAxis: [
-      {
-        type: "category",
-        data: sortedDates,
-        axisTick: {
-          alignWithLabel: true,
-        },
-        axisLabel: {
-          interval: 0,
-          rotate: 45,
-        },
-      },
-    ],
-    yAxis: [
-      {
-        type: "value",
-      },
-    ],
-    series: [
-      {
-        name: "订单数量",
-        type: "bar",
-        barWidth: "60%",
-        data: dailyData,
-        itemStyle: {
-          color: "#409EFF",
-        },
-      },
-    ],
-  };
+    if (chartRef2.value) {
+      const chartInstance = echarts.init(chartRef2.value, null, {
+        renderer: "svg",
+      });
+      chartInstance.setOption(dailyOption);
+    }
+  } catch (error) {
+    console.error("获取订单日期分布数据失败:", error);
+  }
+};
 
-  // 电影评分均分图表配置
-  const movieNames = Object.keys(avgRating);
-  const avgRatings = movieNames.map((movieName) => {
-    const { totalRating, count } = avgRating[movieName];
-    return totalRating / count;
-  });
-
-  const avgRatingOption: EChartsOption = {
-    title: {
-      text: "电影评分分布",
-      left: "center",
-    },
-    tooltip: {
-      trigger: "axis",
-      axisPointer: {
-        type: "shadow",
-      },
-    },
-    xAxis: [
-      {
-        type: "category",
-        data: movieNames,
-        axisTick: {
-          alignWithLabel: true,
-        },
-      },
-    ],
-    yAxis: [
-      {
-        type: "value",
-      },
-    ],
-    series: [
-      {
-        name: "平均评分",
-        type: "bar",
-        barWidth: "60%",
-        data: avgRatings,
-        itemStyle: {
-          color: "#66CC66",
-        },
-      },
-    ],
-  };
-
-  createChart(chartRef1, orderStatusOption);
-  createChart(chartRef2, dailyOption);
-  createChart(chartRef3, avgRatingOption);
+// 挂载时调用
+onMounted(() => {
+  renderOrderStatusChart();
+  renderOrderDateChart();
 });
 </script>
 

@@ -88,3 +88,19 @@ export async function getFeedbackPaginated(
     params,
   });
 }
+
+/** 获取近期订单状态分布*/
+export async function getOrdersStatus() {
+  return await service({
+    url: "/api/orders/recent_status",
+    method: "get",
+  });
+}
+
+/**获取近期订单数量 */
+export async function getOrdersCount() {
+  return await service({
+    url: "/api/orders/recent_counts",
+    method: "get",
+  });
+}

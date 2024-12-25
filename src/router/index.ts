@@ -35,6 +35,15 @@ const routes: Array<RouteRecordRaw> = [
               requiresAuth: true,
             },
           },
+          {
+            path: "data",
+            component: () => import("@/views/userManager/data/index.vue"),
+            name: "UserData",
+            meta: {
+              title: "用户增量",
+              requiresAuth: true,
+            },
+          },
         ],
       },
       {

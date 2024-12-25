@@ -60,3 +60,16 @@ export async function deleteUser(id: string) {
     method: "delete",
   });
 }
+
+/**增加用户分布 */
+interface UsersAddParams {
+  year?: number | null;
+}
+
+export async function getUsersAdd(params: UsersAddParams) {
+  return await service({
+    url: "/api/users/add",
+    method: "get",
+    params,
+  });
+}
