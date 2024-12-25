@@ -8,13 +8,6 @@
 
     <!-- 放映计划数据表格 -->
     <el-table :data="paginatedData" style="width: 100%" border>
-      <!-- 放映编号 -->
-      <el-table-column
-        prop="scheduleId"
-        label="放映编号"
-        width="150"
-        align="center"
-      />
       <!-- 电影名称 -->
       <el-table-column
         prop="movieName"

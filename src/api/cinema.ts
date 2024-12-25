@@ -17,27 +17,6 @@ export async function getCinemas() {
   });
 }
 
-/** 获取影厅座位示意图 */
-export async function getCinemaImage(id: string) {
-  return await service({
-    url: `/api/cinemas/image/${id}.png`,
-    method: "get",
-    responseType: "blob", // 返回二进制数据（图片）
-  });
-}
-
-/** 上传影厅座位示意图 */
-export async function uploadCinemaImage(id: string, image: FormData) {
-  return await service({
-    url: `/api/cinemas/image/${id}.png`,
-    method: "post",
-    headers: {
-      "Content-Type": "multipart/form-data",
-    },
-    data: image,
-  });
-}
-
 /** 获取影厅收入 */
 export async function getCinemaIncome() {
   return await service({
