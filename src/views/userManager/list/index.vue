@@ -81,45 +81,48 @@
     <!-- 分页 -->
     <div class="pagination-container">
       <el-pagination
-        v-model:current-page="currentPage"
-        :page-size="pageSize"
-        :total="totalRecords"
+        v-model:current-page="pagination.page"
+        :page-size="pagination.pageSize"
+        :total="pagination.total"
         layout="prev, pager, next"
         @current-change="handlePageChange"
       />
     </div>
+
+    <!-- 用户详情 Drawer -->
+    <UserDrawer
+      :drawerVisible="isDrawerVisible"
+      :row="selectedRow"
+      @update:drawerVisible="isDrawerVisible = $event"
+    />
+
+    <!-- 编辑用户 Dialog -->
+    <EditDialog
+      :dialogVisible="isEditDialogVisible"
+      :row="selectedRow"
+      @update:dialogVisible="isEditDialogVisible = $event"
+      @refresh="fetchData"
+    />
+
+    <!-- 添加用户 Dialog -->
+    <AddDialog
+      :dialogVisible="isAddDialogVisible"
+      @update:dialogVisible="isAddDialogVisible = $event"
+      @refresh="fetchData"
+    />
   </div>
-
-  <!-- 用户详情 Drawer -->
-  <UserDrawer
-    :drawerVisible="isDrawerVisible"
-    :row="selectedRow"
-    @update:drawerVisible="isDrawerVisible = $event"
-  />
-
-  <!-- 编辑用户 Dialog -->
-  <EditDialog
-    :dialogVisible="isEditDialogVisible"
-    :row="selectedRow"
-    @update:dialogVisible="isEditDialogVisible = $event"
-  />
-
-  <!-- 添加用户 Dialog -->
-  <AddDialog
-    :dialogVisible="isAddDialogVisible"
-    @update:dialogVisible="isAddDialogVisible = $event"
-  />
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted } from "vue";
+import { ref, onMounted, watch } from "vue";
 import { Plus } from "@element-plus/icons-vue";
 import UserDrawer from "./components/detailDrawer.vue";
 import EditDialog from "./components/editDialog.vue";
 import AddDialog from "./components/addDialog.vue";
 import Filter from "./components/filter.vue";
-import dayjs from "dayjs";
 import { getUsersPaginated, deleteUser } from "@/api/user";
+import dayjs from "dayjs";
+import { ElMessage, ElMessageBox } from "element-plus";
 
 // 控制 Drawer 和 Dialog 的显示与隐藏
 const isDrawerVisible = ref(false);
@@ -129,19 +132,14 @@ const selectedRow = ref<Record<string, any> | undefined>(undefined);
 
 // 表格数据与分页
 const tableData = ref([]);
-const totalRecords = ref(0);
-const currentPage = ref(1);
-const pageSize = ref(10);
-
-// 筛选条件初始化
-const filters = ref({
-  userName: "",
-  userId: "",
-  userEmail: "",
-  status: "",
-  range: [] as string[],
-  userPhone: "",
+const pagination = ref({
+  page: 1,
+  pageSize: 10,
+  total: 0,
 });
+
+// 筛选条件
+const filters = ref();
 
 // 格式化时间
 const formatDate = (date: string) => dayjs(date).format("YYYY-MM-DD HH:mm:ss");
@@ -158,72 +156,89 @@ const getStatusType = (status: string) => {
   }
 };
 
-// 获取分页数据
-const fetchPaginatedData = async () => {
+// 获取用户数据
+const fetchData = async (page = pagination.value.page) => {
   try {
     const response = await getUsersPaginated({
-      pageSize: pageSize.value,
-      page: currentPage.value,
+      pageSize: pagination.value.pageSize,
+      page,
       ...filters.value,
     });
-
     const { total, data } = response.data.contents;
-    totalRecords.value = total;
+    pagination.value.total = total;
     tableData.value = data;
   } catch (error) {
     console.error("获取分页数据失败:", error);
   }
 };
 
-// 筛选逻辑
-const handleFilter = (newFilters: any) => {
-  filters.value = {
-    ...filters.value,
-    ...newFilters,
-    range: newFilters.range || [],
-  };
-  currentPage.value = 1;
-  fetchPaginatedData();
-};
-
-// 分页切换
+// 分页操作
 const handlePageChange = (page: number) => {
-  currentPage.value = page;
-  fetchPaginatedData();
+  pagination.value.page = page;
+  fetchData();
 };
 
-// 查看详情操作
+// 筛选操作
+const handleFilter = (filterParams: any) => {
+  filters.value = filterParams;
+  fetchData(1); // 筛选后重置页码为1
+};
+
+// 删除用户
+const handleDelete = async (userId: string) => {
+  try {
+    await ElMessageBox.confirm("此操作将永久删除用户, 是否继续？", "警告", {
+      confirmButtonText: "确定",
+      cancelButtonText: "取消",
+      type: "warning",
+    });
+    await deleteUser(userId);
+    ElMessage.success("用户删除成功！");
+    fetchData();
+  } catch (error) {
+    ElMessage.info("操作取消或失败！");
+  }
+};
+
+// 查看详情
 const handleDetail = (row: any) => {
   isDrawerVisible.value = true;
   selectedRow.value = row;
 };
 
-// 编辑操作
+// 编辑用户
 const handleEdit = (row: any) => {
   isEditDialogVisible.value = true;
   selectedRow.value = row;
 };
 
-// 删除操作
-const handleDelete = async (userId: string) => {
-  try {
-    await deleteUser(userId);
-    console.log(`用户 ${userId} 已删除`);
-    fetchPaginatedData();
-  } catch (error) {
-    console.error("删除失败:", error);
-  }
-};
-
-// 添加操作
+// 添加用户
 const handleAdd = () => {
   isAddDialogVisible.value = true;
   selectedRow.value = undefined;
 };
 
-// 初始化数据
+// 数据监听和初始化
+watch(
+  () => isEditDialogVisible.value,
+  (newValue, oldValue) => {
+    if (oldValue === true && newValue === false) {
+      fetchData();
+    }
+  }
+);
+
+watch(
+  () => isAddDialogVisible.value,
+  (newValue, oldValue) => {
+    if (oldValue === true && newValue === false) {
+      fetchData();
+    }
+  }
+);
+
 onMounted(() => {
-  fetchPaginatedData();
+  fetchData();
 });
 </script>
 

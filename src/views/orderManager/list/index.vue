@@ -216,16 +216,16 @@ const handleFilter = (filterParams: any) => {
 const handleDelete = async (orderId: string) => {
   try {
     // 显示确认对话框
-    await ElMessageBox.confirm("此操作将永久删除该影厅, 是否继续？", "警告", {
+    await ElMessageBox.confirm("此操作将永久删除订单, 是否继续？", "警告", {
       confirmButtonText: "确定",
       cancelButtonText: "取消",
       type: "warning",
     });
 
-    // 用户确认后删除影厅
+    // 用户确认后删除订单
     const index = tableData.value.findIndex((item) => item.orderId === orderId);
     if (index !== -1) {
-      tableData.value.splice(index, 1); // 删除影厅信息
+      tableData.value.splice(index, 1); // 删除订单信息
       const response = await deleteOrder(orderId);
       if (response.data.code == 200) {
         ElMessage.success(response.data.msg);

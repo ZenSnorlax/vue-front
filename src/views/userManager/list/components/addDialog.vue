@@ -1,5 +1,5 @@
 <template>
-  <el-dialog v-model="dialogVisible" title="增加放映" width="500px">
+  <el-dialog v-model="dialogVisible" title="增加用户" width="500px">
     <el-form :model="form" label-width="100px" ref="formRef">
       <!-- 用户名称 -->
       <el-form-item label="用户名称" prop="userName">
@@ -46,6 +46,7 @@
 <script setup lang="ts">
 import { defineProps, defineEmits, ref, watch } from "vue";
 import { createUser } from "@/api/user";
+import { ElMessage } from "element-plus";
 
 // 定义父组件传递的属性
 const props = defineProps({
@@ -83,9 +84,13 @@ const closeDialog = () => {
 
 // 确认按钮点击处理
 const handleConfirm = async () => {
-  await createUser(form.value);
-  console.log(form.value); // 提交数据
-  closeDialog();
+  const reponse = await createUser(form.value);
+  if (reponse.data.code == 200) {
+    ElMessage.success(reponse.data.msg);
+    closeDialog();
+  } else if (reponse.data.code == 500) {
+    ElMessage.error(reponse.data.msg);
+  }
 };
 
 // 监听 dialogVisible 的变化并通知父组件

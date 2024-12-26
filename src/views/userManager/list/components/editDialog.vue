@@ -48,6 +48,7 @@
 import { defineProps, defineEmits, ref, watch } from "vue";
 // 导入更新订单数据的API（例如，updateOrder）
 import { updateUser } from "@/api/user";
+import { ElMessage } from "element-plus";
 
 // 定义父组件传递的属性
 const props = defineProps({
@@ -89,9 +90,13 @@ const closeDialog = () => {
 
 // 确认按钮点击处理
 const handleConfirm = async () => {
-  await updateUser(form.value.userId, form.value);
-  console.log(form.value);
-  closeDialog();
+  const reponse = await updateUser(form.value.userId, form.value);
+  if (reponse.data.code == 200) {
+    ElMessage.success(reponse.data.msg);
+    closeDialog();
+  } else if (reponse.data.code == 500) {
+    ElMessage.error(reponse.data.msg);
+  }
 };
 
 // 监听 dialogVisible 的变化并通知父组件

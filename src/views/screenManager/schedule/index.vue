@@ -107,11 +107,13 @@ import Filter from "./components/filter.vue";
 import dayjs from "dayjs"; // 导入 dayjs 库
 import isBetween from "dayjs/plugin/isBetween";
 import { deleteScreen, getScreensPaginated } from "@/api/screen";
+import { ElMessage, ElMessageBox } from "element-plus";
 // 注册插件
 dayjs.extend(isBetween);
 
 // 定义表格数据类型
-interface Order {
+interface Screen {
+  id: string;
   orderId: string;
   userId: string;
   cinemaName: string;
@@ -121,7 +123,7 @@ interface Order {
 }
 
 // 表格数据
-const tableData = ref<Order[]>([]);
+const tableData = ref<Screen[]>([]);
 
 // 分页数据
 const pagination = ref({
@@ -195,7 +197,30 @@ const handleEdit = (row: any) => {
 
 // 删除操作
 const handleDelete = async (id: string) => {
-  await deleteScreen(id);
+  try {
+    // 显示确认对话框
+    await ElMessageBox.confirm("此操作将永久删除该放映, 是否继续？", "警告", {
+      confirmButtonText: "确定",
+      cancelButtonText: "取消",
+      type: "warning",
+    });
+
+    // 用户确认后删除放映表
+    const index = tableData.value.findIndex((item) => item.id === id);
+    if (index !== -1) {
+      tableData.value.splice(index, 1);
+      const response = await deleteScreen(id);
+      if (response.data.code == 200) {
+        ElMessage.success(response.data.msg);
+        fetchData();
+      } else if (response.data.code == 500) {
+        ElMessage.error(response.data.msg);
+      }
+    }
+  } catch (error) {
+    // 用户取消操作或发生错误
+    ElMessage.info("已取消删除");
+  }
 };
 
 // 添加操作

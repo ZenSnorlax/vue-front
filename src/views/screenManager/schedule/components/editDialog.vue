@@ -87,11 +87,11 @@ const closeDialog = () => {
 // 确认按钮点击处理
 const handleConfirm = async () => {
   const reponse = await updateScreen(form.value.id, form.value);
-  if (reponse.data.code == 1) {
-    ElMessage("修改成功");
+  if (reponse.data.code == 200) {
+    ElMessage.success(reponse.data.msg);
     closeDialog;
-  } else if (reponse.data.code == 0) {
-    ElMessage(reponse.data.message);
+  } else if (reponse.data.code == 500) {
+    ElMessage.error(reponse.data.msg);
   }
 };
 
