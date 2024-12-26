@@ -65,6 +65,10 @@ const handleSubmit = async () => {
   justify-content: center;
   width: 100%;
   height: 100vh;
+  background-image: url("@/assets/登陆.svg");
+  background-repeat: no-repeat; /* 防止背景图片重复 */
+  background-size: cover; /* 让背景图片覆盖整个容器 */
+  background-position: center;
 }
 
 .login-card {
