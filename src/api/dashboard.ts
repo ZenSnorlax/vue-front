@@ -1,7 +1,7 @@
 import service from "@/utils/request";
 
 export interface RevenueParams {
-  timeframe?: "yearly" | "monthly" | "dayly";
+  timeframe?: "yearly" | "monthly" | "daily";
 }
 
 export async function getRevenue(params: RevenueParams) {

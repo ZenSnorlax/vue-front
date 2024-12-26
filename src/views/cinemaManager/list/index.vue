@@ -93,8 +93,9 @@
   />
 </template>
 <script setup lang="ts">
-import { ref, onMounted } from "vue";
+import { ref, onMounted, watch } from "vue";
 import { Plus } from "@element-plus/icons-vue"; // 图标
+import { ElMessageBox, ElMessage } from "element-plus"; // 消息与对话框
 import EditDialog from "./components/editDialog.vue";
 import AddDialog from "./components/addDialog.vue";
 import { getCinemas, deleteCinema } from "@/api/cinema";
@@ -113,7 +114,6 @@ interface Cinema {
 }
 
 const tableData = ref<Cinema[]>([]);
-
 const loading = ref(false);
 
 // 加载影厅数据
@@ -137,10 +137,24 @@ const handleUpdata = (row: any) => {
 
 // 点击删除的处理函数
 const handleDelete = async (id: string) => {
-  const index = tableData.value.findIndex((item) => item.id === id);
-  if (index !== -1) {
-    tableData.value.splice(index, 1); // 删除影厅信息
-    await deleteCinema(id);
+  try {
+    // 显示确认对话框
+    await ElMessageBox.confirm("此操作将永久删除该影厅, 是否继续？", "警告", {
+      confirmButtonText: "确定",
+      cancelButtonText: "取消",
+      type: "warning",
+    });
+
+    // 用户确认后删除影厅
+    const index = tableData.value.findIndex((item) => item.id === id);
+    if (index !== -1) {
+      tableData.value.splice(index, 1); // 删除影厅信息
+      await deleteCinema(id);
+      ElMessage.success("影厅已成功删除");
+    }
+  } catch (error) {
+    // 用户取消操作或发生错误
+    ElMessage.info("已取消删除");
   }
 };
 
@@ -149,6 +163,24 @@ const handleAdd = () => {
   isAddDialogVisible.value = true;
   selectedRow.value = undefined; // 清空编辑内容以便添加新影厅
 };
+
+// 监听 isEditDialogVisible，从 true 变为 false 时触发
+watch(
+  () => isEditDialogVisible.value,
+  (newValue, oldValue) => {
+    if (oldValue === true && newValue === false) {
+      fetchCinemas(); // 重新加载影厅数据
+    }
+  }
+);
+watch(
+  () => isAddDialogVisible.value,
+  (newValue, oldValue) => {
+    if (oldValue === true && newValue === false) {
+      fetchCinemas(); // 重新加载影厅数据
+    }
+  }
+);
 
 // 页面加载时调用
 onMounted(() => {

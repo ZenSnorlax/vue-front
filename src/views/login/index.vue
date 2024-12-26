@@ -31,34 +31,28 @@
 import { ref } from "vue";
 import { useRouter } from "vue-router"; // 引入 Vue Router
 import { login } from "@/api/login";
+import { ElMessage } from "element-plus";
 
 const username = ref("");
 const password = ref("");
-const errorMessage = ref(""); // 用于存储错误消息
+const errorMessage = ref("");
 
-const router = useRouter(); // 获取路由实例
+const router = useRouter();
 
 const handleSubmit = async () => {
-  if (username.value == "admin" && password.value == "123456") {
-    localStorage.setItem("token", "1");
-    router.push("/");
-  }
-  /**
   const response = await login({
     username: username.value,
     password: password.value,
   });
 
-  if (response.status == 200) {
+  if (response.status == 200 && response.data.code == 200) {
     const token = response.data.token;
-
     localStorage.setItem("token", token);
-
-    console.log("登录成功:", response.data);
-
+    ElMessage.success("登录成功");
     router.push("/");
+  } else if (response.status == 200 && response.data.code == 500) {
+    ElMessage("账户或密码错误");
   }
-  */
 };
 </script>
 
