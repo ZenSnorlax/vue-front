@@ -32,8 +32,9 @@
       <!-- 放映状态 -->
       <el-form-item label="状态" prop="status">
         <el-select v-model="form.status" placeholder="请选择状态">
-          <el-option label="活跃" value="活跃" />
-          <el-option label="禁用" value="禁用" />
+          <el-option label="未放映" value="放映" />
+          <el-option label="正在放映" value="正在放映" />
+          <el-option label="已放映" value="已放映" />
         </el-select>
       </el-form-item>
     </el-form>

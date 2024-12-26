@@ -10,7 +10,14 @@
       <el-form-item label="影厅名称" prop="cinemaName">
         <el-input v-model="form.cinemaName" placeholder="请输入影厅名称" />
       </el-form-item>
-
+      <!-- 用户状态 -->
+      <el-form-item label="放映状态">
+        <el-select v-model="form.status" placeholder="请选择放映状态">
+          <el-option label="未放映" value="未放映" />
+          <el-option label="正在放映" value="正在放映" />
+          <el-option label="已放映" value="已放映" />
+        </el-select>
+      </el-form-item>
       <!-- 开始时间 -->
       <el-form-item label="开始时间" prop="startTime">
         <el-date-picker
