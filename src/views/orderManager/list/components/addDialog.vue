@@ -1,5 +1,5 @@
 <template>
-  <el-dialog v-model="dialogVisible" title="增加影厅" width="500px">
+  <el-dialog v-model="dialogVisible" title="增加订单" width="500px">
     <el-form :model="form" label-width="100px" ref="formRef">
       <!-- 影厅名称 -->
       <el-form-item label="影厅名称" prop="cinemaName">
@@ -61,6 +61,7 @@
 <script setup lang="ts">
 import { defineProps, defineEmits, ref, watch } from "vue";
 import { createOrder } from "@/api/order";
+import { ElMessage } from "element-plus";
 
 // 定义父组件传递的属性
 const props = defineProps({
@@ -100,9 +101,13 @@ const closeDialog = () => {
 
 // 确认按钮点击处理
 const handleConfirm = async () => {
-  await createOrder(form.value);
-  console.log(form.value);
-  closeDialog();
+  const response = await createOrder(form.value);
+  if (response.data.code == 200) {
+    ElMessage.success(response.data.msg);
+    closeDialog();
+  } else if (response.data.code == 500) {
+    ElMessage.error(response.data.msg);
+  }
 };
 
 // 监听 dialogVisible 的变化并通知父组件

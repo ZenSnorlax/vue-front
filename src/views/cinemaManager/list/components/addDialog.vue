@@ -44,6 +44,7 @@
 <script setup lang="ts">
 import { defineProps, defineEmits, ref, watch } from "vue";
 import { createCinema } from "@/api/cinema";
+import { ElMessage } from "element-plus";
 
 // 定义父组件传递的属性
 const props = defineProps({
@@ -81,10 +82,13 @@ const closeDialog = () => {
 
 // 确认按钮点击处理
 const handleConfirm = async () => {
-  await createCinema(form.value);
-  console.log("Form data:", form);
-  // 这里可以处理表单数据，提交API请求等
-  closeDialog(); // 关闭对话框
+  const response = await createCinema(form.value);
+  if (response.data.code == 200) {
+    ElMessage.success(response.data.msg);
+    closeDialog();
+  } else if (response.data.code == 500) {
+    ElMessage.error(response.data.msg);
+  }
 };
 
 // 监听 dialogVisible 的变化并通知父组件

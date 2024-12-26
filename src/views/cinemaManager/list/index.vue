@@ -149,8 +149,13 @@ const handleDelete = async (id: string) => {
     const index = tableData.value.findIndex((item) => item.id === id);
     if (index !== -1) {
       tableData.value.splice(index, 1); // 删除影厅信息
-      await deleteCinema(id);
-      ElMessage.success("影厅已成功删除");
+      const response = await deleteCinema(id);
+      if (response.data.code == 200) {
+        ElMessage.success(response.data.msg);
+        fetchCinemas();
+      } else if (response.data.code == 500) {
+        ElMessage.error(response.data.msg);
+      }
     }
   } catch (error) {
     // 用户取消操作或发生错误

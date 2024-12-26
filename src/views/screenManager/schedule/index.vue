@@ -99,7 +99,7 @@
 </template>
 
 <script setup lang="ts">
-import { onMounted, ref } from "vue";
+import { onMounted, ref, watch } from "vue";
 import { Plus } from "@element-plus/icons-vue"; // 图标
 import EditDialog from "./components/editDialog.vue";
 import AddDialog from "./components/addDialog.vue";
@@ -203,6 +203,24 @@ const handleAdd = () => {
   isAddDialogVisible.value = true;
   selectedRow.value = undefined;
 };
+
+// 监听 isEditDialogVisible，从 true 变为 false 时触发
+watch(
+  () => isEditDialogVisible.value,
+  (newValue, oldValue) => {
+    if (oldValue === true && newValue === false) {
+      fetchData(); // 重新加载影厅数据
+    }
+  }
+);
+watch(
+  () => isAddDialogVisible.value,
+  (newValue, oldValue) => {
+    if (oldValue === true && newValue === false) {
+      fetchData(); // 重新加载影厅数据
+    }
+  }
+);
 onMounted(() => {
   fetchData();
 });

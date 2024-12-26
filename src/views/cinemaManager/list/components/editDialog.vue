@@ -44,6 +44,7 @@
 <script setup lang="ts">
 import { defineProps, defineEmits, ref, watch } from "vue";
 import { updateCinema } from "@/api/cinema";
+import { ElMessage } from "element-plus";
 
 // 定义 CinemaData 类型
 interface CinemaData {
@@ -109,8 +110,13 @@ const closeDialog = () => {
 // 确认按钮点击处理
 const handleConfirm = async () => {
   const cinemaData: CinemaData = { ...form.value }; // 确保类型一致
-  closeDialog();
-  await updateCinema(cinemaData.id, cinemaData);
+  const response = await updateCinema(cinemaData.id, cinemaData);
+  if (response.data.code == 200) {
+    ElMessage.success(response.data.msg);
+    closeDialog();
+  } else if (response.data.code == 500) {
+    ElMessage.error(response.data.msg);
+  }
 };
 
 // 监听 dialogVisible 的变化并通知父组件

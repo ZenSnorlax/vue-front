@@ -122,7 +122,7 @@
 </template>
 
 <script setup lang="ts">
-import { ref, onMounted } from "vue";
+import { ref, onMounted, watch } from "vue";
 import { Plus } from "@element-plus/icons-vue";
 import OrderDrawer from "./components/detailDrawer.vue";
 import EditDialog from "./components/editDialog.vue";
@@ -130,6 +130,7 @@ import AddDialog from "./components/addDialog.vue";
 import Filter from "./components/filter.vue";
 import { getOrdersPaginated, deleteOrder } from "@/api/order";
 import dayjs from "dayjs";
+import { ElMessage, ElMessageBox } from "element-plus";
 
 // 定义表格数据类型
 interface Order {
@@ -214,9 +215,28 @@ const handleFilter = (filterParams: any) => {
 // 删除操作
 const handleDelete = async (orderId: string) => {
   try {
-    await deleteOrder(orderId);
+    // 显示确认对话框
+    await ElMessageBox.confirm("此操作将永久删除该影厅, 是否继续？", "警告", {
+      confirmButtonText: "确定",
+      cancelButtonText: "取消",
+      type: "warning",
+    });
+
+    // 用户确认后删除影厅
+    const index = tableData.value.findIndex((item) => item.orderId === orderId);
+    if (index !== -1) {
+      tableData.value.splice(index, 1); // 删除影厅信息
+      const response = await deleteOrder(orderId);
+      if (response.data.code == 200) {
+        ElMessage.success(response.data.msg);
+        fetchData();
+      } else if (response.data.code == 500) {
+        ElMessage.error(response.data.msg);
+      }
+    }
   } catch (error) {
-    console.error(`删除订单 ${orderId} 失败:`, error);
+    // 用户取消操作或发生错误
+    ElMessage.info("已取消删除");
   }
 };
 
@@ -237,6 +257,24 @@ const handleAdd = () => {
   isAddDialogVisible.value = true;
   selectedRow.value = undefined;
 };
+
+// 监听 isEditDialogVisible，从 true 变为 false 时触发
+watch(
+  () => isEditDialogVisible.value,
+  (newValue, oldValue) => {
+    if (oldValue === true && newValue === false) {
+      fetchData(); // 重新加载影厅数据
+    }
+  }
+);
+watch(
+  () => isAddDialogVisible.value,
+  (newValue, oldValue) => {
+    if (oldValue === true && newValue === false) {
+      fetchData(); // 重新加载影厅数据
+    }
+  }
+);
 
 onMounted(() => {
   fetchData();
